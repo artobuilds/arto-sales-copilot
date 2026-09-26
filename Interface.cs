@@ -8,11 +8,13 @@ public partial class MainWindow
     {
         if(!ready)return;
         bool compact=ActualHeight<820 || ActualWidth<1150;
+        bool detailsOpen=CoverageExpander.IsExpanded||ManualExpander.IsExpanded;
+        CallLayout.MinHeight=detailsOpen?(compact?552:540):(compact?372:502);
         RootLayout.Margin=new(0);
         PageTitle.FontSize=compact?22:27;
         HeaderPanel.Margin=new(212,compact?12:24,28,0);
-        TopStatusBox.Padding=new(0,10,0,0);
-        TopStatusBox.Margin=new(212,0,28,12);
+        TopStatusBox.Padding=new(16,12,16,12);
+        TopStatusBox.Margin=new(212,0,28,16);
         VoiceCard.Padding=new(0,compact?10:14,0,0);
         VoiceCard.Margin=new(0,compact?12:18,0,0);
         VoiceStatus.Margin=compact?new(0,4,0,6):new(0,7,0,10);
@@ -23,7 +25,17 @@ public partial class MainWindow
         VoiceHeading.ToolTip=VoiceNote.Text+"\n"+VoicePersonText.Text;
         CoverageExpander.Padding=ManualExpander.Padding=new(0);
         Tabs.ApplyTemplate();
-        if(Tabs.Template.FindName("PART_SelectedContentHost",Tabs) is System.Windows.Controls.ContentPresenter host)host.Margin=new(28,compact?90:126,28,compact?76:84);
+        if(Tabs.Template.FindName("PART_SelectedContentHost",Tabs) is System.Windows.Controls.ContentPresenter host)host.Margin=new(28,compact?90:126,28,16);
+    }
+    void CallDisclosureChanged(object sender,RoutedEventArgs e)
+    {
+        if(!ready)return;
+        WindowSizeChanged(this,null!);
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,()=>
+        {
+            if(CoverageExpander.IsExpanded||ManualExpander.IsExpanded)((System.Windows.Controls.Expander)sender).BringIntoView();
+            else CallViewport.ScrollToTop();
+        });
     }
     void GoAudio(object s, RoutedEventArgs e) => Tabs.SelectedIndex = 2;
     void GoCall(object s, RoutedEventArgs e) {Tabs.SelectedIndex = 0;RenderVoice();}

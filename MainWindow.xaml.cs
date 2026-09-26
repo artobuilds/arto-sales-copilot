@@ -93,7 +93,7 @@ public partial class MainWindow : Window
     });
     void CopyLine(object s,RoutedEventArgs e)=>Guard(()=>{Clipboard.SetText(SayText.Text);ShowFeedback(T("Скопировано"));});
     void SetButtons() {DemoButton.IsEnabled=!busy&&!finalizing;AiDemoButton.IsEnabled=!busy&&!finalizing;LiveButton.IsEnabled=!busy&&!finalizing;NewButton.IsEnabled=!busy&&!finalizing;LanguageBox.IsEnabled=!busy&&!finalizing;VoiceEnabledBox.IsEnabled=!busy&&!finalizing;StopButton.IsEnabled=busy&&!finalizing;MicrophoneBox.IsEnabled=OutputBox.IsEnabled=VideoSourceBox.IsEnabled=!busy&&!finalizing;}
-    void ClearConversation() {turns.Clear();TranscriptPanel.Children.Clear();TranscriptPanel.Children.Add(EmptyTranscript);SetUi(TurnCount,()=>T("0 реплик"));SignalsPanel.Children.Clear();aiRequests=0;inputTokens=0;SetUi(AdviceTitle,()=>T("Подсказка появится здесь"));SetUi(SayText,()=>T("Заполни «Подготовку», выбери устройства в «Звук и запись», затем нажми «Начать звонок»."));SetUi(AdviceMeta,()=>T("Подсказок пока нет"));SetUi(StageText,()=>T("Знакомство"));ResetVoiceState();}
+    void ClearConversation() {turns.Clear();TranscriptPanel.Children.Clear();TranscriptPanel.Children.Add(EmptyTranscript);SetUi(TurnCount,()=>T("0 реплик"));SignalsPanel.Children.Clear();aiRequests=0;inputTokens=0;SetUi(AdviceTitle,()=>T("Подсказка появится здесь"));SetUi(SayText,()=>T("Заполни «Подготовку», выбери устройства в «Звук и запись», затем нажми «Начать звонок»."));SetUi(AdviceMeta,()=>T("Подсказок пока нет"));SetUi(StageText,()=>T("Знакомство"));TopicsEmptyText.Visibility=Visibility.Visible;ResetVoiceState();}
     void NewConversation(object s,RoutedEventArgs e) {if(busy)return;if(turns.Count>0&&MessageBox.Show(this,T("Очистить текущий разговор на экране? Сначала сохрани заметки, если они нужны."),T("Новый звонок"),MessageBoxButton.YesNo)!=MessageBoxResult.Yes)return;scripted=false;ClearConversation();SetUi(ModeText,()=>T("Микрофон выключен"));SetUi(StatusText,()=>T("Новый разговор. Проверь подготовку клиента и устройства."));SetUi(SessionMeta,()=>T("Запись начнётся после «Начать звонок»"));}
     void Begin(bool demo,bool isLive,bool clear)
     {
@@ -216,6 +216,7 @@ public partial class MainWindow : Window
             var chip=new Border{Child=text,Padding=new(10,7,10,7),Margin=new(0,0,7,7),CornerRadius=new(5)};
             chip.SetResourceReference(Border.BackgroundProperty,"Chip");UiText.Bind(chip,FrameworkElement.ToolTipProperty,()=>T("Оценка наличия сведений: {0:P0}. Это не вероятность продажи. «Не подтверждено» также может означать «не применимо».",s.Value));SignalsPanel.Children.Add(chip);
         }
+        TopicsEmptyText.Visibility=SignalsPanel.Children.Count==0?Visibility.Visible:Visibility.Collapsed;
     }
     async void StopClicked(object s,RoutedEventArgs e){StopSession();SetUi(StatusText,()=>T("Останавливаем запись и сохраняем файлы…"));await recordingFinalization;SetUi(StatusText,()=>T(stopSummary));}
     void StopSession()

@@ -1,4 +1,4 @@
-# Arto Signature — interface 0.6
+# Arto Signature — interface 0.6.1
 
 An operator should see the client, the next useful phrase and the state of the call without searching through a settings form. This redesign changes the shell and information hierarchy while retaining the native WPF controls and existing call logic.
 
@@ -43,7 +43,11 @@ No React, web view, SaaS framework, web CSS or new NuGet dependency was introduc
 
 `UiMotion` animates only opacity and a four-pixel translation with ease-out. Snapshot-and-replace prevents queues. It respects `SystemParameters.ClientAreaAnimation`, high contrast and keyboard input. Windows preference changes refresh chrome/colors. Save/copy feedback appears briefly without changing focus. Advice updates retain focus and fixed panel geometry; longer replies scroll inside the advice area.
 
-The narrow metal mark and inset phrase rule are the signature detail. They reveal once when actual advice is shown. There are no running decorative waveforms, fake levels or invented sales probabilities. Demo voice values remain em dashes; scripted advice has no confidence number in its tooltip. Audio meters still use the existing real capture values.
+The inset phrase rule marks the suggested reply. The rail uses the plain Arto / Sales Copilot wordmark; the ambiguous A-slash decoration was removed in 0.6.1. There are no running decorative waveforms, fake levels or invented sales probabilities. Demo voice values remain em dashes; scripted advice has no confidence number in its tooltip. Audio meters still use the existing real capture values.
+
+The two call disclosures now have outlined 44-pixel headers, explicit localized Open/Hide actions, a rotating chevron and hover/focus feedback. Empty topics explain when content will appear. Capture status occupies its own automatic-height grid row with complete internal padding and an outer bottom gap. It no longer relies on a hardcoded reserved margin. On short windows, expanded content scrolls the working area instead of squeezing the suggestion away; the capture footer stays visible.
+
+Latest refinement: [collapsed call controls](docs/redesign/after/refined-light-1320-closed.png), [both controls open](docs/redesign/after/refined-light-1320-open.png), [compact expanded area](docs/redesign/after/refined-light-1000-open.png).
 
 Four native tabs retain their existing indices and handlers. Keys, providers, model identifiers, API payloads, audio capture, recording, voice algorithms and storage contracts are unchanged. API key values remain hidden, with saved-state text kept distinct from API availability.
 
@@ -60,7 +64,7 @@ Four native tabs retain their existing indices and handlers. Keys, providers, mo
 
 ## Real application evidence
 
-All images below come from the executable's own synthetic UI fixtures. Before images are from 0.5; after images are from 0.6. The screenshot exporter now captures the client area exactly, so the old unused bottom strip is absent.
+All images below come from the executable's own synthetic UI fixtures. Before images are from 0.5; after images are from 0.6.1. The screenshot exporter now captures the client area exactly, so the old unused bottom strip is absent.
 
 | Screen | Before | After |
 | --- | --- | --- |
@@ -71,6 +75,6 @@ All images below come from the executable's own synthetic UI fixtures. Before im
 | Preparation · Day | ![Before preparation](docs/redesign/before/preparation-light.png) | ![After preparation](docs/redesign/after/preparation-light.png) |
 | Settings · Day | ![Before settings](docs/redesign/before/settings-light.png) | ![After settings](docs/redesign/after/settings-light.png) |
 
-[Interaction demonstration](docs/redesign/arto-signature-interactions.mp4): rendered frames from the real WPF window with fictional content, not a recording of the user's desktop or microphone. Includes advice update, feedback presentation, audio disclosure, theme and language switching. The feedback segment demonstrates presentation; it does not prove a clipboard write. Native keyboard/dropdown behavior was checked separately.
+[Initial 0.6 interaction demonstration](docs/redesign/arto-signature-interactions.mp4): rendered frames from the real WPF window with fictional content, not a recording of the user's desktop or microphone. This earlier video predates the 0.6.1 wordmark, footer and disclosure refinements shown in the current screenshots. Includes advice update, feedback presentation, audio disclosure, theme and language switching. The feedback segment demonstrates presentation; it does not prove a clipboard write. Native keyboard/dropdown behavior was checked separately.
 
 Detailed test scope and remaining limitations: [VERIFICATION.md](VERIFICATION.md).

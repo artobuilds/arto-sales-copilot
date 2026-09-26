@@ -1,16 +1,18 @@
-# Preview 0.6 verification
+# Preview 0.6.1 verification
 
 The public source uses neutral briefing defaults, relative runtime paths and user-selected key imports. It excludes the developer's installed application, personal profile, provider-account diagnostics, credentials, recordings and history.
 
 ## Automated checks
 
-Validation on 2026-09-26 used .NET SDK 10.0.301 and the existing NAudio 2.2.1 dependency. Release publication, `--self-test` and `--ui-smoke` run on the published executable. The final accepted run contains 36 offline checks and 153 UI checks, plus one informational DPI line. Test fixtures use fictional content and isolated storage; no microphone, desktop recording or live provider request is involved.
+Validation on 2026-09-26 used .NET SDK 10.0.301 and the existing NAudio 2.2.1 dependency. Release publication, `--self-test` and `--ui-smoke` run on the published executable. The final accepted run contains 36 offline checks and 300 UI checks, plus one informational DPI line. Test fixtures use fictional content and isolated storage; no microphone, desktop recording or live provider request is involved.
 
 The checks cover provider request contracts, bounded context, reply verification, DPAPI storage with fake keys, recording arithmetic, acoustic baselines, selected-file key imports, RU/UK/EN in both Day/Night themes, 1000×720 and 1320×900 windows, targeted text/control contrast and preference persistence. Appearance changes preserve unfinished briefs, unrelated settings, conversation language and encrypted keys.
 
 The redesign adds checks for native automation names, stable keyboard focus after a suggestion, the immediate reduced-motion path, repeated animations settling without a queue, non-modal audio instructions, all four compact page viewports and transient save feedback. The animation test waits for the WPF render clock within a bounded interval; a fixed 230 ms wall-clock delay was unreliable in a hidden window under load. Viewport tests and screenshots do not establish that every possible long user-supplied value fits.
 
 The actual Windows window ran at 96 DPI (100%). WPF raster exports at 100%, 125% and 150% checked vector rendering only. They are **not** a Windows display-scale change or multi-monitor acceptance test. The optional Python acoustic suite was not rerun for this presentation-only change.
+
+Version 0.6.1 adds regression checks for both call disclosures open/closed in all six language/theme combinations and both window sizes. They verify Open/Hide labels, 44-pixel click targets, retained reply viewport, footer/voice separation, full footer padding, empty topics and native toggle focus. In a compact open state, the working-area scrollbar intentionally reveals the lower controls; Start/Stop and the footer stay fixed.
 
 ## Native interaction checks
 

@@ -54,6 +54,7 @@ public partial class MainWindow
                 }
             }
         }
+        await CheckDisclosureLayout(directory,checks);
         InterfaceLanguageBox.SelectedIndex=2;ThemeBox.SelectedIndex=0;Tabs.SelectedIndex=0;Width=1320;Height=900;UpdateLayout();await Task.Delay(220);
         var dpi=VisualTreeHelper.GetDpi(this);checks.Add($"INFO actual window DPI {dpi.PixelsPerInchX:F0}; 100/125/150% images below are WPF raster checks, not a change to Windows display settings");
         foreach(var scale in new[]{1d,1.25,1.5})

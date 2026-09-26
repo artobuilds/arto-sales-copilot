@@ -4,10 +4,10 @@
  Background="{DynamicResource Bg}" Foreground="{DynamicResource Ink}" FontFamily="{StaticResource BodyFont}" FontSize="14"
  WindowStartupLocation="CenterScreen" Closing="OnClosing" SizeChanged="WindowSizeChanged" Loaded="SignatureLoaded">
 <Grid x:Name="RootLayout" Background="{DynamicResource Bg}">
+ <Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
  <TabControl x:Name="Tabs" TabStripPlacement="Left" SelectionChanged="NavigationChanged">
   <TabItem Tag="&#xE8F2;" Header="{DynamicResource L010}" AutomationProperties.Name="{DynamicResource L010}">
-   <Grid x:Name="CallLayout">
-    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+   <Grid><Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition/></Grid.RowDefinitions>
     <Grid Margin="0,0,0,18"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
      <StackPanel Orientation="Horizontal">
       <Button x:Name="LiveButton" AutomationProperties.Name="{DynamicResource L014}" Click="StartLive" Style="{StaticResource Primary}"><StackPanel Orientation="Horizontal"><TextBlock Text="&#xE768;" Style="{StaticResource Icon}" FontSize="12" Margin="0,0,9,0"/><TextBlock Text="{DynamicResource L014}"/></StackPanel></Button>
@@ -19,7 +19,10 @@
       <Button Content="{DynamicResource L013}" Click="ExportNotes" Style="{StaticResource Quiet}" Margin="0"/>
      </StackPanel>
     </Grid>
-    <Grid Grid.Row="1">
+    <ScrollViewer x:Name="CallViewport" Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <Grid x:Name="CallLayout" Height="{Binding ActualHeight,ElementName=CallViewport}">
+     <Grid.RowDefinitions><RowDefinition/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <Grid>
      <Grid.ColumnDefinitions><ColumnDefinition Width="1.18*"/><ColumnDefinition Width="26"/><ColumnDefinition/></Grid.ColumnDefinitions>
      <Border x:Name="AdviceCard" Style="{StaticResource Card}" Background="{DynamicResource AdvicePanel}" BorderBrush="{DynamicResource AdviceBorder}" Padding="28">
       <DockPanel>
@@ -48,13 +51,30 @@
       </ScrollViewer>
      </DockPanel>
     </Grid>
-        <Border x:Name="VoiceCard" Grid.Row="2" Style="{StaticResource Card}" Margin="0,18,0,0" Padding="0,14,0,0" Background="Transparent" CornerRadius="0" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource VoiceBorder}"><StackPanel><DockPanel><StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><ComboBox x:Name="VoiceSpeakerBox" Width="140" SelectedIndex="0" SelectionChanged="VoiceSpeakerChanged" AutomationProperties.Name="{DynamicResource L031}" MinHeight="34" Margin="0,0,8,0"><ComboBoxItem x:Name="ClientVoiceItem" Content="{DynamicResource L032}" Tag="client"/><ComboBoxItem x:Name="RepVoiceItem" Content="{DynamicResource L033}" Tag="rep"/></ComboBox><Button x:Name="ResetVoiceButton" Content="{DynamicResource L034}" Click="ResetVoice" IsEnabled="False" FontSize="12" Padding="10,6" MinHeight="34" Margin="0"/></StackPanel><TextBlock x:Name="VoiceHeading" Text="{DynamicResource L035}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/></DockPanel><TextBlock x:Name="VoiceStatus" Text="{DynamicResource L036}" Style="{StaticResource Help}" Margin="0,7,0,10" AutomationProperties.LiveSetting="Polite"/>
+        <Border x:Name="VoiceCard" Grid.Row="1" Style="{StaticResource Card}" Margin="0,18,0,0" Padding="0,14,0,0" Background="Transparent" CornerRadius="0" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource VoiceBorder}"><StackPanel><DockPanel><StackPanel DockPanel.Dock="Right" Orientation="Horizontal"><ComboBox x:Name="VoiceSpeakerBox" Width="140" SelectedIndex="0" SelectionChanged="VoiceSpeakerChanged" AutomationProperties.Name="{DynamicResource L031}" MinHeight="34" Margin="0,0,8,0"><ComboBoxItem x:Name="ClientVoiceItem" Content="{DynamicResource L032}" Tag="client"/><ComboBoxItem x:Name="RepVoiceItem" Content="{DynamicResource L033}" Tag="rep"/></ComboBox><Button x:Name="ResetVoiceButton" Content="{DynamicResource L034}" Click="ResetVoice" IsEnabled="False" FontSize="12" Padding="10,6" MinHeight="34" Margin="0"/></StackPanel><TextBlock x:Name="VoiceHeading" Text="{DynamicResource L035}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/></DockPanel><TextBlock x:Name="VoiceStatus" Text="{DynamicResource L036}" Style="{StaticResource Help}" Margin="0,7,0,10" AutomationProperties.LiveSetting="Polite"/>
           <UniformGrid Columns="4"><StackPanel Margin="0,0,12,0"><TextBlock x:Name="VoicePitchLabel" Text="{DynamicResource L037}" Style="{StaticResource Help}" ToolTip="{DynamicResource L038}"/><TextBlock x:Name="VoicePitchText" Text="—" FontSize="18" FontWeight="SemiBold" Margin="0,3,0,0"/></StackPanel><StackPanel Margin="0,0,12,0"><TextBlock x:Name="VoiceLevelLabel" Text="{DynamicResource L039}" Style="{StaticResource Help}" ToolTip="{DynamicResource L040}"/><TextBlock x:Name="VoiceLevelText" Text="—" FontSize="18" FontWeight="SemiBold" Margin="0,3,0,0"/></StackPanel><StackPanel Margin="0,0,12,0"><TextBlock x:Name="VoicePaceLabel" Text="{DynamicResource L041}" Style="{StaticResource Help}"/><TextBlock x:Name="VoicePaceText" Text="—" FontSize="18" FontWeight="SemiBold" Margin="0,3,0,0"/></StackPanel><StackPanel><TextBlock x:Name="VoicePauseLabel" Text="{DynamicResource L042}" Style="{StaticResource Help}"/><TextBlock x:Name="VoicePauseText" Text="—" FontSize="18" FontWeight="SemiBold" Margin="0,3,0,0"/></StackPanel></UniformGrid>
           <DockPanel Margin="0,9,0,0"><TextBlock x:Name="VoicePersonText" DockPanel.Dock="Right" Foreground="{DynamicResource Muted}" FontSize="11"/><TextBlock x:Name="VoiceNote" Text="{DynamicResource L043}" Foreground="{DynamicResource Muted}" FontSize="11" Margin="0,0,16,0"/></DockPanel>
         </StackPanel></Border>
 
-        <Grid Grid.Row="3" Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions><Expander x:Name="CoverageExpander" Header="{DynamicResource L044}" Margin="0,0,16,0"><ScrollViewer MaxHeight="95" VerticalScrollBarVisibility="Auto"><WrapPanel x:Name="SignalsPanel" Margin="0,8,0,0"/></ScrollViewer></Expander><Expander x:Name="ManualExpander" Grid.Column="1" Header="{DynamicResource L045}"><DockPanel Margin="0,8,0,0"><Button Content="{DynamicResource L046}" Click="SendText" DockPanel.Dock="Right" FontSize="12" Margin="8,0,0,0"/><ComboBox x:Name="SpeakerBox" SelectedIndex="0" Width="95" DockPanel.Dock="Left" Margin="0,0,8,0" AutomationProperties.Name="{DynamicResource L047}"><ComboBoxItem Content="{DynamicResource L048}" Tag="client"/><ComboBoxItem Content="{DynamicResource L049}" Tag="rep"/></ComboBox><TextBox x:Name="ManualText" MaxLength="6000" MaxHeight="80" AutomationProperties.Name="{DynamicResource L050}" ToolTip="{DynamicResource L051}" KeyDown="ManualKeyDown"/></DockPanel></Expander></Grid>
+    <Grid Grid.Row="2" Margin="0,12,0,0">
+     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+     <Expander x:Name="CoverageExpander" Header="{DynamicResource L044}" Style="{StaticResource ActionDisclosure}" Margin="0,0,16,0" VerticalAlignment="Top" Expanded="CallDisclosureChanged" Collapsed="CallDisclosureChanged">
+      <ScrollViewer MaxHeight="95" VerticalScrollBarVisibility="Auto"><Grid Margin="4,4,4,0">
+       <TextBlock x:Name="TopicsEmptyText" Text="{DynamicResource S007}" Style="{StaticResource Help}"/>
+       <WrapPanel x:Name="SignalsPanel"/>
+      </Grid></ScrollViewer>
+     </Expander>
+     <Expander x:Name="ManualExpander" Grid.Column="1" Header="{DynamicResource L045}" Style="{StaticResource ActionDisclosure}" VerticalAlignment="Top" Expanded="CallDisclosureChanged" Collapsed="CallDisclosureChanged">
+      <DockPanel Margin="0,4,0,0">
+       <Button Content="{DynamicResource L046}" Click="SendText" DockPanel.Dock="Right" FontSize="12" Margin="8,0,0,0"/>
+       <ComboBox x:Name="SpeakerBox" SelectedIndex="0" Width="95" DockPanel.Dock="Left" Margin="0,0,8,0" AutomationProperties.Name="{DynamicResource L047}"><ComboBoxItem Content="{DynamicResource L048}" Tag="client"/><ComboBoxItem Content="{DynamicResource L049}" Tag="rep"/></ComboBox>
+       <TextBox x:Name="ManualText" MaxLength="6000" MaxHeight="80" AutomationProperties.Name="{DynamicResource L050}" ToolTip="{DynamicResource L051}" KeyDown="ManualKeyDown"/>
+      </DockPanel>
+     </Expander>
+    </Grid>
 
+   </Grid>
+   </ScrollViewer>
    </Grid>
   </TabItem>
     <TabItem Tag="&#xE8A5;" Header="{DynamicResource L052}" AutomationProperties.Name="{DynamicResource L053}"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,0,12,0"><DockPanel><Button Content="{DynamicResource L054}" Click="SaveBrief" Style="{StaticResource Primary}" DockPanel.Dock="Right" Margin="16,0,0,0"/><TextBlock Text="{DynamicResource L055}" Style="{StaticResource Heading}"/></DockPanel><TextBlock Text="{DynamicResource L056}" Style="{StaticResource Help}" Margin="0,8,0,20"/>
@@ -126,15 +146,16 @@
    <TextBlock x:Name="PageTitle" Text="{Binding Text,ElementName=BriefTitle}" FontFamily="{StaticResource DisplayFont}" FontSize="27" FontWeight="SemiBold" Margin="0,6,0,0" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding Text,ElementName=BriefTitle}"/>
   </StackPanel>
  </DockPanel>
- <Border x:Name="TopStatusBox" VerticalAlignment="Bottom" Background="{DynamicResource StatusPanel}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="0,12,0,0" Margin="212,0,28,16">
+ <Border Grid.Row="1" HorizontalAlignment="Left" Width="184" Background="{DynamicResource Rail}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0"/>
+ <Border x:Name="TopStatusBox" Grid.Row="1" Background="{DynamicResource StatusPanel}" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="8" Padding="16,12" Margin="212,0,28,16">
   <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="1.35*"/><ColumnDefinition Width="24"/><ColumnDefinition/></Grid.ColumnDefinitions>
-   <StackPanel><TextBlock x:Name="ModeText" Text="{DynamicResource L009}" Foreground="{DynamicResource Accent}" FontWeight="SemiBold" FontSize="11"/><TextBlock x:Name="StatusText" Text="{DynamicResource L008}" AutomationProperties.LiveSetting="Polite" Style="{StaticResource Help}" Margin="0,4,0,0" MaxHeight="36" TextTrimming="CharacterEllipsis"/></StackPanel>
+   <StackPanel><TextBlock x:Name="ModeText" Text="{DynamicResource L009}" Foreground="{DynamicResource Accent}" FontWeight="SemiBold" FontSize="12"/><TextBlock x:Name="StatusText" Text="{DynamicResource L008}" AutomationProperties.LiveSetting="Polite" Style="{StaticResource Help}" Margin="0,4,0,0" MaxHeight="60" TextTrimming="CharacterEllipsis"/></StackPanel>
    <StackPanel Grid.Column="2">
     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="16"/><ColumnDefinition/></Grid.ColumnDefinitions>
      <StackPanel><TextBlock Text="{DynamicResource L017}" Style="{StaticResource Help}" Margin="0,0,0,5"/><ProgressBar x:Name="MicMeter" Height="3" Maximum="1" Background="{DynamicResource Line}" Foreground="{DynamicResource Accent}" AutomationProperties.Name="{DynamicResource L018}"/></StackPanel>
      <StackPanel Grid.Column="2"><TextBlock Text="{DynamicResource L019}" Style="{StaticResource Help}" Margin="0,0,0,5"/><ProgressBar x:Name="OutputMeter" Height="3" Maximum="1" Background="{DynamicResource Line}" Foreground="{DynamicResource AudioAccent}" AutomationProperties.Name="{DynamicResource L020}"/></StackPanel>
     </Grid>
-    <TextBlock x:Name="SessionMeta" Text="{DynamicResource L021}" Style="{StaticResource Help}" FontSize="10" Margin="0,7,0,0" MaxHeight="30"/>
+    <TextBlock x:Name="SessionMeta" Text="{DynamicResource L021}" Style="{StaticResource Help}" FontSize="11" LineHeight="16" Margin="0,7,0,0" MaxHeight="32" TextTrimming="CharacterEllipsis"/>
    </StackPanel>
   </Grid>
  </Border>
