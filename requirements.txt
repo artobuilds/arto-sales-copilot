@@ -1,0 +1,4 @@
+# Optional local speech runtime; desktop UI/demo need only .NET.
+# These direct dependencies match the development environment.
+faster-whisper==1.2.1
+numpy==2.5.1

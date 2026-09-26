@@ -1,0 +1,12 @@
+{
+  "title": "Client name — discovery call",
+  "profile": "Your name and role. Add only verified experience, services and relevant examples. Replace this placeholder before a real conversation.",
+  "offer": "Describe the actual service or project being discussed. Include only confirmed prices and delivery commitments; otherwise mark them unknown.",
+  "client": "Client background, job post, prior conversation, current process, known problems. Distinguish direct quotes, verified facts and hypotheses.",
+  "goal": "Build trust, understand pain and impact, qualify the opportunity, agree the next step.",
+  "constraints": "No invented proof, prices, savings, guarantees or timelines. No promises beyond agreed scope.",
+  "customChecks": [
+    "Has the client described a measurable success criterion?",
+    "Have we identified who will approve the project?"
+  ]
+}

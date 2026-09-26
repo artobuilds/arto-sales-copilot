@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Arto Sales Copilot</AssemblyName>
+    <RootNamespace>ArtoSalesCopilot</RootNamespace>
+    <Version>0.5.0</Version>
+    <ApplicationIcon Condition="Exists('Assets\app.ico')">Assets\app.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UiStrings.json" />
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <None Update="speech_worker.py" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="prosody_worker.py" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="brief-template.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="README.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="QUICKSTART-RU.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="PRIVACY.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="VOICE-ANALYSIS.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
