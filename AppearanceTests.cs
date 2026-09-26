@@ -10,6 +10,7 @@ public partial class MainWindow
 {
     async Task CheckAppearance(string directory,List<string> checks)
     {
+        feedbackTimer.Stop();FeedbackBox.Visibility=Visibility.Collapsed;
         void Check(bool ok,string label){if(!ok)throw new InvalidOperationException("Appearance check failed: "+label);checks.Add("PASS "+label);}
         foreach(var entry in UiText.Entries)
         {
@@ -22,6 +23,7 @@ public partial class MainWindow
         var originalBrief=Store.Load().Brief.Client;ClientText.Text="Unfinished client edit — must not be auto-saved";
         var keyBytes=File.ReadAllBytes(Path.Combine(Store.Root,"typesafe.key"));
         scripted=true;ClearConversation();for(int i=0;i<4;i++)AddTurn(Demo.Turn(i,"en"));ShowAdvice(Demo.Advice(3,"en"));
+        await Task.Delay(220);
         SetUi(ModeText,()=>T("Текстовый пример · без микрофона"));SetUi(StatusText,()=>T("Идёт текстовый пример. Реплики и подсказки подготовлены заранее. Микрофон выключен."));
         var clientPhrase=SayText.Text;var callLanguage=LanguageCode;
         foreach(var (code,index) in new[]{("ru",0),("uk",1),("en",2)})
@@ -44,12 +46,13 @@ public partial class MainWindow
                 Check(persisted.Brief.Client==originalBrief&&JsonNode.Parse(File.ReadAllText(settingsPath))!["futureSetting"]!.ToString()=="keep-me","appearance save preserves unfinished brief and unrelated settings: "+code+"/"+theme);
                 foreach(var size in new[]{(1000d,720d),(1320d,900d)})
                 {
-                    Width=size.Item1;Height=size.Item2;Tabs.SelectedIndex=0;UpdateLayout();
+                    Width=size.Item1;Height=size.Item2;Tabs.SelectedIndex=0;UpdateLayout();await Task.Delay(200);
                     var bounds=VoiceCard.TransformToAncestor(this).TransformBounds(new Rect(new Point(),VoiceCard.RenderSize));
                     Check(bounds.Bottom<=ActualHeight&&bounds.Right<=ActualWidth&&AdviceCard.ActualHeight>=160,"call layout fits "+code+"/"+theme+" "+Width+"x"+Height);
                     Capture(Path.Combine(directory,$"appearance-{code}-{theme}-{Width:F0}.png"));
                 }
-                Tabs.SelectedIndex=3;UpdateLayout();Capture(Path.Combine(directory,$"settings-{code}-{theme}.png"));
+                for(int page=1;page<4;page++){Tabs.SelectedIndex=page;UpdateLayout();await Task.Delay(200);Capture(Path.Combine(directory,$"page-{page}-{code}-{theme}.png"));}
+                Capture(Path.Combine(directory,$"settings-{code}-{theme}.png"));
             }
         }
         Check(File.ReadAllBytes(Path.Combine(Store.Root,"typesafe.key")).SequenceEqual(keyBytes),"appearance switch leaves encrypted API key unchanged");

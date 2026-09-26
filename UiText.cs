@@ -86,7 +86,7 @@ public partial class MainWindow
         try
         {
             UiText.SetLanguage(settings.InterfaceLanguage);UiTheme.Apply(settings.Theme);
-            RenderVoice();
+            RenderVoice();UpdateSignature();WindowSizeChanged(this,null!);
             RefreshLabels(MicrophoneBox);RefreshLabels(OutputBox);RefreshLabels(VideoSourceBox);
         }
         finally{appearanceChanging=false;}

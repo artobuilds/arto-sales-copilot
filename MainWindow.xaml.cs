@@ -43,8 +43,8 @@ public partial class MainWindow : Window
     Brief ReadBrief()=>new Brief {Title=BriefTitle.Text.Trim(),Profile=ProfileText.Text.Trim(),Offer=OfferText.Text.Trim(),Client=ClientText.Text.Trim(),Goal=GoalText.Text.Trim(),Constraints=ConstraintsText.Text.Trim(),CustomChecks=CustomText.Text.Split(['\r','\n'],StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries)}.Validate();
     void LoadBrief(Brief b) {BriefTitle.Text=b.Title;ProfileText.Text=b.Profile;OfferText.Text=b.Offer;ClientText.Text=b.Client;GoalText.Text=b.Goal;ConstraintsText.Text=b.Constraints;CustomText.Text=string.Join(Environment.NewLine,b.CustomChecks);}
     void CollectSettings() {settings.Brief=ReadBrief();settings.Language=LanguageCode;settings.PythonPath=PythonPathText.Text.Trim();settings.ModelCache=CachePathText.Text.Trim();settings.UsePhrasing=PhrasingBox.IsChecked==true;settings.Microphone=(MicrophoneBox.SelectedItem as DeviceOption)?.Id??"";settings.Output=(OutputBox.SelectedItem as DeviceOption)?.Id??"";settings.SaveSession=SaveSessionBox.IsChecked==true;settings.AnalyzeVoice=VoiceEnabledBox.IsChecked==true;settings.FfmpegPath=FfmpegText.Text.Trim();settings.PhrasingModel=((ComboBoxItem)ModelBox.SelectedItem).Tag.ToString()!;settings.ReasoningEffort=((ComboBoxItem)ReasoningBox.SelectedItem).Tag.ToString()!;}
-    void SaveBrief(object s,RoutedEventArgs e)=>Guard(()=>{CollectSettings();Store.Save(settings);SetUi(StatusText,()=>T("Подготовка сохранена на компьютере."));});
-    void SaveSettings(object s,RoutedEventArgs e)=>Guard(()=>{CollectSettings();settings.PhrasingModel=((ComboBoxItem)ModelBox.SelectedItem).Tag.ToString()!;settings.ReasoningEffort=((ComboBoxItem)ReasoningBox.SelectedItem).Tag.ToString()!;Store.Save(settings);if(!string.IsNullOrWhiteSpace(TypeSafeKey.Password))Store.SetKey("typesafe",TypeSafeKey.Password);if(!string.IsNullOrWhiteSpace(OpenAiKey.Password))Store.SetKey("openai",OpenAiKey.Password);TypeSafeKey.Clear();OpenAiKey.Clear();UpdateKeyStatus();SetUi(StatusText,()=>T("Настройки сохранены. Ключи зашифрованы для твоей учётной записи Windows."));});
+    void SaveBrief(object s,RoutedEventArgs e)=>Guard(()=>{CollectSettings();Store.Save(settings);SetUi(StatusText,()=>T("Подготовка сохранена на компьютере."));ShowFeedback(T("Сохранено на компьютере"));});
+    void SaveSettings(object s,RoutedEventArgs e)=>Guard(()=>{CollectSettings();settings.PhrasingModel=((ComboBoxItem)ModelBox.SelectedItem).Tag.ToString()!;settings.ReasoningEffort=((ComboBoxItem)ReasoningBox.SelectedItem).Tag.ToString()!;Store.Save(settings);if(!string.IsNullOrWhiteSpace(TypeSafeKey.Password))Store.SetKey("typesafe",TypeSafeKey.Password);if(!string.IsNullOrWhiteSpace(OpenAiKey.Password))Store.SetKey("openai",OpenAiKey.Password);TypeSafeKey.Clear();OpenAiKey.Clear();UpdateKeyStatus();SetUi(StatusText,()=>T("Настройки сохранены. Ключи зашифрованы для твоей учётной записи Windows."));ShowFeedback(T("Сохранено на компьютере"));});
     void RemoveKeys(object s,RoutedEventArgs e)=>Guard(()=>{if(MessageBox.Show(this,T("Остановить звонок и удалить сохранённые ключи приложения? Исходные файлы ключей останутся."),T("Удаление ключей"),MessageBoxButton.YesNo)!=MessageBoxResult.Yes)return;StopSession();typesafe="";openai="";Store.SetKey("typesafe","");Store.SetKey("openai","");TypeSafeKey.Clear();OpenAiKey.Clear();UpdateKeyStatus();});
     void ImportOpenAiKey(object s,RoutedEventArgs e)=>Guard(()=>{if(!ImportSelectedKey("openai"))return;UpdateKeyStatus();SetUi(StatusText,()=>T("Ключ OpenAI импортирован и зашифрован. Запросов к API не было."));});
     void ImportTypeSafeKey(object s,RoutedEventArgs e)=>Guard(()=>{
@@ -91,7 +91,7 @@ public partial class MainWindow : Window
         foreach(var t in turns)sb.AppendLine($"\n**{t.Speaker} [{t.Seconds:F1}s]**: {t.Text}");
         sb.AppendLine("\n## Latest suggestion (not an agreed commitment)\n\n"+SayText.Text);File.WriteAllText(d.FileName,sb.ToString(),Encoding.UTF8);SetUi(StatusText,()=>T("Заметки сохранены в выбранный файл."));
     });
-    void CopyLine(object s,RoutedEventArgs e)=>Guard(()=>Clipboard.SetText(SayText.Text));
+    void CopyLine(object s,RoutedEventArgs e)=>Guard(()=>{Clipboard.SetText(SayText.Text);ShowFeedback(T("Скопировано"));});
     void SetButtons() {DemoButton.IsEnabled=!busy&&!finalizing;AiDemoButton.IsEnabled=!busy&&!finalizing;LiveButton.IsEnabled=!busy&&!finalizing;NewButton.IsEnabled=!busy&&!finalizing;LanguageBox.IsEnabled=!busy&&!finalizing;VoiceEnabledBox.IsEnabled=!busy&&!finalizing;StopButton.IsEnabled=busy&&!finalizing;MicrophoneBox.IsEnabled=OutputBox.IsEnabled=VideoSourceBox.IsEnabled=!busy&&!finalizing;}
     void ClearConversation() {turns.Clear();TranscriptPanel.Children.Clear();TranscriptPanel.Children.Add(EmptyTranscript);SetUi(TurnCount,()=>T("0 реплик"));SignalsPanel.Children.Clear();aiRequests=0;inputTokens=0;SetUi(AdviceTitle,()=>T("Подсказка появится здесь"));SetUi(SayText,()=>T("Заполни «Подготовку», выбери устройства в «Звук и запись», затем нажми «Начать звонок»."));SetUi(AdviceMeta,()=>T("Подсказок пока нет"));SetUi(StageText,()=>T("Знакомство"));ResetVoiceState();}
     void NewConversation(object s,RoutedEventArgs e) {if(busy)return;if(turns.Count>0&&MessageBox.Show(this,T("Очистить текущий разговор на экране? Сначала сохрани заметки, если они нужны."),T("Новый звонок"),MessageBoxButton.YesNo)!=MessageBoxResult.Yes)return;scripted=false;ClearConversation();SetUi(ModeText,()=>T("Микрофон выключен"));SetUi(StatusText,()=>T("Новый разговор. Проверь подготовку клиента и устройства."));SetUi(SessionMeta,()=>T("Запись начнётся после «Начать звонок»"));}
@@ -201,14 +201,15 @@ public partial class MainWindow : Window
         if(EmptyTranscript is not null)TranscriptPanel.Children.Remove(EmptyTranscript);
         var stamp=$"{Math.Floor(Math.Max(0,t.Seconds)/60):00}:{Math.Max(0,t.Seconds)%60:00}";
         var panel=new StackPanel();panel.Children.Add(TranscriptHeading(t,stamp));panel.Children.Add(new TextBlock{Text=t.Text,FontSize=15,LineHeight=23});
-        var row=new Border{Child=panel,Padding=new(12),Margin=new(0,0,0,10),CornerRadius=new(7)};
+        var row=new Border{Child=panel,Padding=new(12,16,12,16),Margin=new(0,0,0,6),CornerRadius=new(6)};
         row.SetResourceReference(Border.BackgroundProperty,t.Speaker=="rep"?"TranscriptRep":"TranscriptClient");TranscriptPanel.Children.Add(row);
         if(TranscriptPanel.Children.Count>200)TranscriptPanel.Children.RemoveAt(0);SetUi(TurnCount,()=>T("Реплик: {0}",turns.Count));TranscriptScroll.ScrollToEnd();
     }
     public void ShowAdvice(Advice a)
     {
         recording?.Advice(a);
-        SetUi(AdviceTitle,()=>Coach.Title(a.Move,UiText.Language));SayText.Text=a.Say;SetUi(StageText,()=>StageName(a.Stage));SetUi(AdviceMeta,()=>scripted?T("Готовый пример · ИИ не используется"):T("Подсказка Jev · базовая фраза"));UiText.Bind(AdviceMeta,FrameworkElement.ToolTipProperty,()=>T("{0}; уверенность в выборе шага: {1:P0}. Это не вероятность продажи.",a.Source,a.Confidence));SignalsPanel.Children.Clear();
+        UiMotion.Reveal(AdviceContent);UiMotion.Reveal(SignatureMark,180);
+        SetUi(AdviceTitle,()=>Coach.Title(a.Move,UiText.Language));SayText.Text=a.Say;SetUi(StageText,()=>StageName(a.Stage));SetUi(AdviceMeta,()=>scripted?T("Готовый пример · ИИ не используется"):T("Подсказка Jev · базовая фраза"));UiText.Bind(AdviceMeta,FrameworkElement.ToolTipProperty,()=>scripted?T("Готовый пример · ИИ не используется"):T("{0}; уверенность в выборе шага: {1:P0}. Это не вероятность продажи.",a.Source,a.Confidence));SignalsPanel.Children.Clear();
         foreach(var s in a.Signals) {
             var state=s.Value>=.8?T("есть в разговоре"):s.Value<=.2?T("пока не подтверждено"):T("нужно уточнить");
             var text=new TextBlock{FontSize=11};text.SetResourceReference(TextBlock.ForegroundProperty,s.Value>=.8?"Accent":"Muted");SetUi(text,()=>T("{0} · {1}",TopicName(s),T(state)));
@@ -299,6 +300,7 @@ public partial class MainWindow : Window
             Check(Store.GetKey("typesafe")=="fictional-typesafe-test-key"&&Store.GetKey("openai")=="fictional-openai-test-key","empty API fields preserve encrypted existing keys");
             Check(KeyStatus.Text.Contains("ключ сохранён"),"stored key status is explicit");
             await CheckAppearance(directory,checks);
+            await CheckSignature(directory,checks);
         }
         finally{Store.Root=originalRoot;}
         StatusText.Text=FriendlyError(new InvalidOperationException("TypeSafe HTTP 402 billing_error"));
@@ -307,5 +309,5 @@ public partial class MainWindow : Window
         UpdateLayout();Capture(Path.Combine(directory,"redesign-error.png"));
         File.WriteAllLines(Path.Combine(directory,"ui-checks.txt"),checks);
     }
-    void Capture(string path){var bitmap=new RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);bitmap.Render(this);var png=new PngBitmapEncoder();png.Frames.Add(BitmapFrame.Create(bitmap));using var file=File.Create(path);png.Save(file);}
+    void Capture(string path){var bitmap=new RenderTargetBitmap((int)Math.Ceiling(RootLayout.ActualWidth),(int)Math.Ceiling(RootLayout.ActualHeight),96,96,PixelFormats.Pbgra32);bitmap.Render(RootLayout);var png=new PngBitmapEncoder();png.Frames.Add(BitmapFrame.Create(bitmap));using var file=File.Create(path);png.Save(file);}
 }

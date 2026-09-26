@@ -7,20 +7,23 @@ public partial class MainWindow
     void WindowSizeChanged(object s, SizeChangedEventArgs e)
     {
         if(!ready)return;
-        bool compact=ActualHeight<820;
-        RootLayout.Margin=compact?new(18,12,18,12):new(24,18,24,18);
-        BrandName.Visibility=compact?Visibility.Collapsed:Visibility.Visible;
-        PageTitle.FontSize=compact?22:26;
-        HeaderPanel.Margin=compact?new(0,0,0,10):new(0,0,0,18);
-        TopStatusBox.Padding=compact?new(12,8,12,8):new(14,10,14,10);
-        TopStatusBox.Margin=compact?new(0,0,0,8):new(0,0,0,12);
-        VoiceCard.Padding=compact?new(16,10,16,10):new(18,13,18,13);
-        VoiceStatus.Margin=compact?new(0,5,0,6):new(0,7,0,10);
-        VoiceStatus.FontSize=compact?12:13;
-        AdviceCard.Padding=compact?new(16,12,16,12):new(20);
-        SayText.FontSize=compact?19:22;SayText.LineHeight=compact?26:31;
-        CoverageExpander.Padding=ManualExpander.Padding=compact?new(0):new(0,12,0,0);
-        foreach(System.Windows.Controls.TabItem tab in Tabs.Items)tab.Padding=compact?new(16,8,16,8):new(18,12,18,12);
+        bool compact=ActualHeight<820 || ActualWidth<1150;
+        RootLayout.Margin=new(0);
+        PageTitle.FontSize=compact?22:27;
+        HeaderPanel.Margin=new(212,compact?12:24,28,0);
+        TopStatusBox.Padding=new(0,10,0,0);
+        TopStatusBox.Margin=new(212,0,28,12);
+        VoiceCard.Padding=new(0,compact?10:14,0,0);
+        VoiceCard.Margin=new(0,compact?12:18,0,0);
+        VoiceStatus.Margin=compact?new(0,4,0,6):new(0,7,0,10);
+        VoiceStatus.FontSize=12;
+        AdviceCard.Padding=compact?new(20,16,20,16):new(28);
+        SayText.FontSize=compact?20:27;SayText.LineHeight=compact?27:37;
+        VoiceNote.Visibility=VoicePersonText.Visibility=compact?Visibility.Collapsed:Visibility.Visible;
+        VoiceHeading.ToolTip=VoiceNote.Text+"\n"+VoicePersonText.Text;
+        CoverageExpander.Padding=ManualExpander.Padding=new(0);
+        Tabs.ApplyTemplate();
+        if(Tabs.Template.FindName("PART_SelectedContentHost",Tabs) is System.Windows.Controls.ContentPresenter host)host.Margin=new(28,compact?90:126,28,compact?76:84);
     }
     void GoAudio(object s, RoutedEventArgs e) => Tabs.SelectedIndex = 2;
     void GoCall(object s, RoutedEventArgs e) {Tabs.SelectedIndex = 0;RenderVoice();}
