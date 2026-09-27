@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Звонок идёт · Day</title>
+</head>
+<body>
+<style>
+body{margin:0;font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;background:#F6F5F0;color:#192F25}
+a{color:#186546}a:hover{color:#0F4A32}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(163,46,35,.45)}70%{box-shadow:0 0 0 7px rgba(163,46,35,0)}100%{box-shadow:0 0 0 0 rgba(163,46,35,0)}}
+@keyframes talk{0%,100%{height:4px}50%{height:14px}}
+@keyframes arrive{from{opacity:.6;transform:translateY(4px)}to{opacity:1;transform:none}}
+.live-dot{animation:livepulse 1.8s ease-out infinite}
+.eq span{animation:talk .9s ease-in-out infinite}
+.eq span:nth-child(2){animation-delay:.15s}.eq span:nth-child(3){animation-delay:.3s}
+.arrive{animation:arrive .18s ease-out both}
+button{font-family:inherit}
+</style>
+<div style="width: 1320px; height: 860px; display: flex; background: #F6F5F0; color: #192F25; overflow: hidden">
+
+<nav aria-label="Разделы" style="width: 76px; flex-shrink: 0; background: #ECEEE5; border-right: 1px solid #DDE3D9; display: flex; flex-direction: column; align-items: center; padding: 20px 0 16px; gap: 6px; box-sizing: border-box">
+<div style="font-size: 17px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 18px">Arto</div>
+<a href="#" aria-current="page" style="width: 62px; height: 58px; border-radius: 12px; background: #DCEBDF; color: #186546; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; font-size: 11px; font-weight: 600">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"></path></svg>
+<span>Звонок</span>
+</a>
+<a href="#" style="width: 62px; height: 58px; border-radius: 12px; color: #52665A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; font-size: 11px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path></svg>
+<span>Бриф</span>
+</a>
+<a href="#" style="width: 62px; height: 58px; border-radius: 12px; color: #52665A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; font-size: 11px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
+<span>Звук</span>
+</a>
+<a href="#" style="width: 62px; height: 58px; border-radius: 12px; color: #52665A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; font-size: 11px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1 7 17M17 7l2.1-2.1"></path></svg>
+<span>Настройки</span>
+</a>
+<div style="flex-grow: 1"></div>
+<div style="font-size: 10px; color: #52665A">0.7</div>
+</nav>
+
+<main style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; padding: 20px 28px 24px; gap: 18px; box-sizing: border-box">
+
+<header style="display: flex; align-items: center; gap: 14px">
+<div style="flex-grow: 1; min-width: 0">
+<div style="font-size: 11px; color: #52665A; font-weight: 600">Звонок</div>
+<h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">Client portal discovery</h1>
+</div>
+<div role="status" style="display: flex; align-items: center; gap: 9px; height: 40px; padding: 0 14px; border-radius: 999px; background: #F6E1DC; color: #A32E23; font-size: 13px; font-weight: 600">
+<span class="live-dot" style="width: 9px; height: 9px; border-radius: 50%; background: #A32E23"></span>
+<span>Идёт звонок</span>
+<span style="font-variant-numeric: tabular-nums; font-weight: 500">12:48</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; width: 120px">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #52665A"><span style="width: 42px">Ты</span><span style="flex-grow: 1; height: 4px; border-radius: 2px; background: #CCD5CC; overflow: hidden; display: flex"><span style="width: 22%; background: #186546"></span></span></div>
+<div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #52665A"><span style="width: 42px">Клиент</span><span style="flex-grow: 1; height: 4px; border-radius: 2px; background: #CCD5CC; overflow: hidden; display: flex"><span style="width: 64%; background: #356383"></span></span></div>
+</div>
+<button aria-label="Язык разговора: английский" style="height: 44px; padding: 0 12px; border-radius: 8px; border: 1px solid #CCD5CC; background: #FFFFFF; color: #192F25; font-size: 13px; display: flex; align-items: center; gap: 6px">EN
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<button aria-label="Мини-режим поверх окон" title="Мини-режим поверх окон" style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid #CCD5CC; background: #FFFFFF; color: #192F25; display: flex; align-items: center; justify-content: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><rect x="12" y="12" width="6" height="5" rx="1"></rect></svg>
+</button>
+<button aria-label="Ещё: новый звонок, пример, сохранить заметки" style="width: 44px; height: 44px; border-radius: 8px; border: 1px solid #CCD5CC; background: #FFFFFF; color: #192F25; display: flex; align-items: center; justify-content: center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="19" cy="12" r="1.6"></circle></svg>
+</button>
+<button style="height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #A32E23; background: #FFFFFF; color: #A32E23; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="5" width="14" height="14" rx="2"></rect></svg>
+Остановить
+</button>
+</header>
+
+<div style="flex-grow: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px">
+
+<section style="display: flex; flex-direction: column; gap: 16px; min-height: 0">
+<article aria-live="polite" style="flex-grow: 1; min-height: 0; background: #E8EEDF; border: 1px solid #B5C8AA; border-radius: 16px; padding: 26px 32px 22px; display: flex; flex-direction: column; box-sizing: border-box">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 3px; height: 14px; background: #80663B"></span>
+<span style="font-size: 12px; font-weight: 700; letter-spacing: 0.6px; color: #186546">ЧТО СКАЗАТЬ</span>
+<span style="flex-grow: 1"></span>
+<span style="font-size: 12px; padding: 5px 11px; border-radius: 999px; background: #F6F8F2; color: #3F5448">Ценность решения</span>
+</div>
+<div class="arrive" style="margin-top: 22px; font-size: 16px; color: #52665A">Выясни ценность</div>
+<p class="arrive" style="margin: 12px 0 0; padding-left: 20px; border-left: 3px solid #80663B; font-family: 'Segoe UI Variable Display','Segoe UI',system-ui,sans-serif; font-size: 32px; line-height: 1.3; font-weight: 500; letter-spacing: -0.2px">If we could improve that process, what outcome would make the project worthwhile for you?</p>
+<div style="flex-grow: 1"></div>
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="font-size: 12px; color: #52665A">Подсказка 4 · ход выбран по брифу</span>
+<span style="flex-grow: 1"></span>
+<button style="height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid #9FB79A; background: #FFFFFF; color: #192F25; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 8px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+Копировать фразу
+</button>
+</div>
+</article>
+
+<section aria-label="Голос и интонация" style="border-top: 1px solid #C4D0C1; padding-top: 14px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; align-items: center; gap: 10px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Голос и интонация</h2>
+<span style="font-size: 12px; color: #52665A">· Собеседник 1 · этот звонок</span>
+<span style="flex-grow: 1"></span>
+<button style="height: 36px; padding: 0 12px; border-radius: 8px; border: 1px solid #CCD5CC; background: #FFFFFF; color: #192F25; font-size: 13px; display: flex; align-items: center; gap: 6px">Голос клиента
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+</button>
+<button style="height: 36px; padding: 0 12px; border-radius: 8px; border: 0; background: transparent; color: #186546; font-size: 13px">Другой собеседник</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<div><div style="font-size: 12px; color: #52665A">Тон голоса</div><div style="margin-top: 4px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#186546" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>Выше обычного</div></div>
+<div><div style="font-size: 12px; color: #52665A">Громкость</div><div style="margin-top: 4px; font-size: 16px; color: #52665A">Как обычно</div></div>
+<div><div style="font-size: 12px; color: #52665A">Скорость речи</div><div style="margin-top: 4px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#186546" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"></path></svg>Медленнее обычного</div></div>
+<div><div style="font-size: 12px; color: #52665A">Паузы</div><div style="margin-top: 4px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 6px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#186546" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg>Длиннее обычного</div></div>
+</div>
+<div style="font-size: 11px; color: #52665A">Сравниваем с обычной речью этого собеседника в начале звонка. Изменения речи, а не эмоции или намерения. Анализ остаётся на компьютере.</div>
+</section>
+</section>
+
+<section aria-label="Разговор" style="display: flex; flex-direction: column; min-height: 0; gap: 12px">
+<div style="display: flex; align-items: baseline; gap: 8px">
+<h2 style="margin: 0; font-size: 15px; font-weight: 600">Разговор</h2>
+<span style="font-size: 12px; color: #52665A">8 реплик</span>
+</div>
+<div style="flex-grow: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; gap: 14px">
+<div><div style="font-size: 11px; color: #52665A">Ты · 00:08</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.5; background: #E7EEE0; border-radius: 12px; padding: 10px 14px">I'm Artur. I work on AI automation and integrations. What brought you to this conversation?</div></div>
+<div style="padding: 0 14px"><div style="font-size: 11px; color: #52665A">Клиент · 00:16</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.5">Our sales team is spending too much time moving information between tools, and leads get missed.</div></div>
+<div style="padding: 0 14px"><div style="font-size: 11px; color: #52665A">Клиент · 00:24</div><div style="margin-top: 4px; font-size: 14px; line-height: 1.5">Probably ten hours a week. More importantly, customers sometimes wait a day for a response.</div></div>
+<div style="padding: 10px 14px; border-radius: 12px; border: 1px dashed #AFC3D3">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #356383; font-weight: 600">
+<span class="eq" style="display: flex; align-items: center; gap: 2px; height: 14px"><span style="width: 3px; height: 8px; border-radius: 2px; background: #356383"></span><span style="width: 3px; height: 8px; border-radius: 2px; background: #356383"></span><span style="width: 3px; height: 8px; border-radius: 2px; background: #356383"></span></span>
+Клиент говорит
+</div>
+<div style="margin-top: 4px; font-size: 14px; line-height: 1.5; color: #52665A">We want faster responses, but I don't want to pay for another tool…</div>
+</div>
+</div>
+<div style="border-top: 1px solid #CCD5CC; padding-top: 12px">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px"><span style="font-size: 12px; font-weight: 600">Что уже обсудили</span><span style="font-size: 12px; color: #52665A">3 из 6</span></div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<span style="font-size: 12px; padding: 5px 10px; border-radius: 999px; background: #DCEBDF; color: #186546; display: flex; align-items: center; gap: 5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Боль клиента</span>
+<span style="font-size: 12px; padding: 5px 10px; border-radius: 999px; background: #DCEBDF; color: #186546; display: flex; align-items: center; gap: 5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Измеримый ущерб</span>
+<span style="font-size: 12px; padding: 5px 10px; border-radius: 999px; background: #DCEBDF; color: #186546; display: flex; align-items: center; gap: 5px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"></path></svg>Желаемый результат</span>
+<span style="font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px dashed #9AAA9F; color: #52665A">Бюджет</span>
+<span style="font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px dashed #9AAA9F; color: #52665A">Принятие решения</span>
+<span style="font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px dashed #9AAA9F; color: #52665A">Сроки</span>
+</div>
+<button style="margin-top: 10px; height: 36px; padding: 0; border: 0; background: transparent; color: #186546; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+Проверить ИИ на тексте
+</button>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+</body>
+</html>

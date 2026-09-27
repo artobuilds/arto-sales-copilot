@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мини-режим поверх Zoom</title>
+</head>
+<body>
+<style>
+body{margin:0;font-family:"Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;background:#0B0F0D;color:#ECF2ED}
+a{color:#98DEB9}a:hover{color:#C4F2D8}
+@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(255,139,116,.5)}70%{box-shadow:0 0 0 6px rgba(255,139,116,0)}100%{box-shadow:0 0 0 0 rgba(255,139,116,0)}}
+@keyframes talk{0%,100%{height:3px}50%{height:11px}}
+.live-dot{animation:livepulse 1.8s ease-out infinite}
+.eq span{animation:talk .9s ease-in-out infinite}
+.eq span:nth-child(2){animation-delay:.15s}.eq span:nth-child(3){animation-delay:.3s}
+button{font-family:inherit}
+</style>
+<div style="width: 440px; height: 300px; box-sizing: border-box; padding: 10px; background: #0B0F0D">
+<div style="width: 100%; height: 100%; box-sizing: border-box; border-radius: 16px; background: rgba(18,27,24,.94); border: 1px solid #37483E; box-shadow: 0 24px 48px -20px rgba(0,0,0,.8); padding: 14px 16px 14px 18px; display: flex; flex-direction: column; gap: 10px; color: #ECF2ED">
+<div style="display: flex; align-items: center; gap: 8px">
+<span class="live-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #FF8B74"></span>
+<span style="font-size: 12px; font-weight: 600; color: #FFB5A5; font-variant-numeric: tabular-nums">12:48</span>
+<span style="font-size: 11px; color: #AFCAE1; display: flex; align-items: center; gap: 6px; margin-left: 6px">
+<span class="eq" style="display: flex; align-items: center; gap: 2px; height: 11px"><span style="width: 2px; height: 6px; border-radius: 1px; background: #AFCAE1"></span><span style="width: 2px; height: 6px; border-radius: 1px; background: #AFCAE1"></span><span style="width: 2px; height: 6px; border-radius: 1px; background: #AFCAE1"></span></span>
+Клиент говорит
+</span>
+<span style="flex-grow: 1"></span>
+<button aria-label="Копировать фразу" style="width: 36px; height: 36px; border-radius: 8px; border: 0; background: #24372D; color: #ECF2ED; display: flex; align-items: center; justify-content: center">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+</button>
+<button aria-label="Развернуть окно" style="width: 36px; height: 36px; border-radius: 8px; border: 0; background: #24372D; color: #ECF2ED; display: flex; align-items: center; justify-content: center">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"></path></svg>
+</button>
+</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span style="width: 3px; height: 12px; background: #C1A776"></span>
+<span style="font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: #98DEB9">ВЫЯСНИ ЦЕННОСТЬ</span>
+</div>
+<p style="margin: 0; font-family: 'Segoe UI Variable Display','Segoe UI',system-ui,sans-serif; font-size: 20px; line-height: 1.35; font-weight: 500">If we could improve that process, what outcome would make the project worthwhile for you?</p>
+<div style="flex-grow: 1"></div>
+<div style="border-top: 1px solid #2C3B33; padding-top: 9px; display: flex; gap: 14px; font-size: 11px; color: #ABBAB1">
+<span>Тон <b style="color: #ECF2ED; font-weight: 600">↑ выше</b></span>
+<span>Громкость <b style="color: #ABBAB1; font-weight: 500">как обычно</b></span>
+<span>Темп <b style="color: #ECF2ED; font-weight: 600">↓ медленнее</b></span>
+<span>Паузы <b style="color: #ECF2ED; font-weight: 600">↑ длиннее</b></span>
+</div>
+</div>
+</div>
+</body>
+</html>
