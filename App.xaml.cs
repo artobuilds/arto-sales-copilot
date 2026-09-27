@@ -33,9 +33,12 @@ public partial class App : Application
             ShutdownMode=ShutdownMode.OnExplicitShutdown;Directory.CreateDirectory("test-output");
             try {using var worker=new SpeechWorker();using var ct=new CancellationTokenSource(TimeSpan.FromSeconds(120));var start=DateTime.UtcNow;await worker.Start(Store.Load(),ct.Token);var warm=DateTime.UtcNow;var text=await worker.Transcribe(Path.GetFullPath(e.Args[1]),e.Args.Length>2?e.Args[2]:"en","",ct.Token);File.WriteAllText("test-output/speech-test.txt",$"Model load: {(warm-start).TotalSeconds:F2}s\nTranscription: {(DateTime.UtcNow-warm).TotalSeconds:F2}s\nText: {text}");Shutdown(string.IsNullOrWhiteSpace(text)?1:0);}catch(Exception ex){File.WriteAllText("test-output/speech-test.txt","FAIL: "+ex.Message);Shutdown(1);}return;
         }
-        var smoke=e.Args.Contains("--ui-smoke");
+        var review=e.Args.Contains("--ui-review");
+        var smoke=e.Args.Contains("--ui-smoke")||review;
+        if(smoke)Store.Root=Path.Combine(Path.GetTempPath(),"ArtoUiFixture-"+Guid.NewGuid().ToString("N"));
         if(!smoke){instance=new Mutex(true,"Local\\ArtoSalesCopilotPreview",out var first);if(!first){MessageBox.Show("Arto Sales Copilot is already open. Use its existing window.","Arto Sales Copilot");Shutdown();return;}}
         var window=new MainWindow(smoke);MainWindow=window;window.Show();
+        if(review){window.PrepareUiReview();return;}
         if(smoke) {
             ShutdownMode=ShutdownMode.OnExplicitShutdown;
             try {await Dispatcher.InvokeAsync(()=>{},DispatcherPriority.ApplicationIdle);await window.Smoke(Path.GetFullPath("test-output"));window.Close();Shutdown(0);}

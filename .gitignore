@@ -34,6 +34,8 @@ HANDOFF.md
 *.wav
 *.mp3
 *.mp4
+# Curated fictional UI evidence only; all user recordings remain ignored.
+!docs/redesign/arto-signature-interactions.mp4
 *.mkv
 *.onnx
 *.safetensors

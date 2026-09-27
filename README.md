@@ -2,9 +2,9 @@
 
 A native Windows assistant that keeps suggested replies, a transcript and local voice observations beside your call.
 
-**Preview 0.5 · Windows · .NET 10 / WPF · RU / UK / EN · Day / Night themes**
+**Preview 0.7.0 · Arto Signature · Windows · .NET 10 / WPF · RU / UK / EN · Day / Night themes**
 
-![Call view in the light theme, using fictional demo content](docs/images/call-light.png)
+![Call view in the light theme, using synthetic test content; no live audio or provider call](docs/redesign/after/v07-live-day.png)
 
 ## What it does
 
@@ -24,7 +24,7 @@ The offline demo works without API keys, Python, audio capture or a meeting. It 
 Requirements: Windows 10/11 and the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0). This is a Windows WPF application, not a website or a Java application.
 
 ```powershell
-git clone https://github.com/Noldor11/arto-sales-copilot.git
+git clone https://github.com/artobuilds/arto-sales-copilot.git
 Set-Location arto-sales-copilot
 .\build.ps1
 Start-Process -FilePath '.\app\Arto Sales Copilot.exe'
@@ -32,7 +32,9 @@ Start-Process -FilePath '.\app\Arto Sales Copilot.exe'
 
 If PowerShell blocks scripts, review the script and use a policy permitted by your organization. The build restores NuGet dependencies and writes to local ignored directories. It does not install Python, download models, create a background service, configure audio routing or start capture.
 
-Select **Посмотреть пример** (View example). The initial interface is Russian; change it in **Настройки → Язык интерфейса**. The Day/Night selector is alongside it. Preferences apply immediately and save automatically.
+Select **⋯ → Посмотреть пример** (View example), or the example link on the readiness card. The initial interface is Russian; change it in **Настройки → Язык интерфейса**. The Day/Night selector is alongside it. Preferences apply immediately and save automatically.
+
+Version 0.7 follows the approved call-screen mockups: a 76-pixel navigation rail (64 in compact mode), one header with capture state and elapsed time, a larger reply card, an always-visible voice strip, topic chips and an inline text test. Before a call, the card checks whether the brief and audio selections are ready. The mini-window button is available during live capture or a text example; Esc or Expand returns to the main window. Only the mini window position is saved. See the [design decisions and side-by-side mockup comparisons](DESIGN.md).
 
 Optional: `./build.ps1 -Shortcut` creates a desktop shortcut only if that shortcut does not already exist. Use a writable project directory. Do not distribute your populated `app/` directory.
 
@@ -88,6 +90,8 @@ $ui.ExitCode
 ```
 
 Re-run `build.ps1` after code changes to update `app/`. Offline and UI checks use fictional inputs and isolated storage without microphone or provider requests. The UI checks need an interactive Windows desktop. `python prosody_tests.py` additionally exercises controlled acoustic measurements with the optional Python dependencies installed.
+
+`--ui-review` opens a fictional review window with a new temporary settings folder and no loaded API keys. This is a UI fixture, not a provider sandbox: do not import real keys or start real capture in it. Set `ARTO_UI_VIDEO=1` while running `--ui-smoke` to render a short sequence of the application's own UI into ignored `test-output/interaction-frames`; it does not capture the desktop or audio.
 
 Do not publish test output, logs, local data, recordings or populated application folders. Review the staged file list even when `.gitignore` excludes them. See [CONTRIBUTING.md](CONTRIBUTING.md) and [VERIFICATION.md](VERIFICATION.md).
 

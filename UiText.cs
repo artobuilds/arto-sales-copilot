@@ -63,8 +63,8 @@ public partial class MainWindow
     static void SetUi(TextBlock target,Func<string> value)=>UiText.Bind(target,TextBlock.TextProperty,value);
     TextBlock TranscriptHeading(Utterance turn,string stamp)
     {
-        var text=new TextBlock{FontSize=12,Margin=new(0,0,0,5)};
-        text.SetResourceReference(TextBlock.ForegroundProperty,turn.Speaker=="rep"?"Accent":"Muted");
+        var text=new TextBlock{FontSize=11,Margin=new(0,0,0,5)};
+        text.SetResourceReference(TextBlock.ForegroundProperty,"Muted");
         SetUi(text,()=>T("{0} · {1}",T(turn.Speaker=="rep"?"Ты":"Клиент"),stamp));return text;
     }
     void AppearanceChanged(object sender,SelectionChangedEventArgs e)
@@ -86,7 +86,7 @@ public partial class MainWindow
         try
         {
             UiText.SetLanguage(settings.InterfaceLanguage);UiTheme.Apply(settings.Theme);
-            RenderVoice();
+            RenderVoice();UpdateSignature();WindowSizeChanged(this,null!);RenderTopics();mini?.ApplyPalette();
             RefreshLabels(MicrophoneBox);RefreshLabels(OutputBox);RefreshLabels(VideoSourceBox);
         }
         finally{appearanceChanging=false;}

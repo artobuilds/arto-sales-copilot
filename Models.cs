@@ -31,6 +31,8 @@ public sealed class Brief
 }
 public sealed class Settings
 {
+    public double? MiniLeft { get; set; }
+    public double? MiniTop { get; set; }
     public string InterfaceLanguage { get; set; } = "ru";
     public string Theme { get; set; } = "dark";
     public string Language { get; set; } = "en";
@@ -63,6 +65,15 @@ public static class Store
         if(document is null)throw new InvalidDataException("Invalid settings document.");
         document["interfaceLanguage"]=UiText.NormalizeLanguage(language);
         document["theme"]=theme=="light"?"light":"dark";
+        WriteAtomic("settings.json",document.ToJsonString(Json));
+    }
+    public static void SaveMiniPosition(double left,double top)
+    {
+        if(!double.IsFinite(left)||!double.IsFinite(top))throw new ArgumentOutOfRangeException(nameof(left));
+        var path=Path.Combine(Root,"settings.json");
+        var document=File.Exists(path)?System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path)) as System.Text.Json.Nodes.JsonObject:new System.Text.Json.Nodes.JsonObject();
+        if(document is null)throw new InvalidDataException("Invalid settings document.");
+        document["miniLeft"]=left;document["miniTop"]=top;
         WriteAtomic("settings.json",document.ToJsonString(Json));
     }
     static void WriteAtomic(string name, string text) { Directory.CreateDirectory(Root); var p = Path.Combine(Root, name); File.WriteAllText(p + ".tmp", text, Encoding.UTF8); File.Move(p + ".tmp", p, true); }
