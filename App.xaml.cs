@@ -35,7 +35,7 @@ public partial class App : Application
         }
         var review=e.Args.Contains("--ui-review");
         var smoke=e.Args.Contains("--ui-smoke")||review;
-        if(review)Store.Root=Path.Combine(Path.GetTempPath(),"ArtoSignatureReview-"+Guid.NewGuid().ToString("N"));
+        if(smoke)Store.Root=Path.Combine(Path.GetTempPath(),"ArtoUiFixture-"+Guid.NewGuid().ToString("N"));
         if(!smoke){instance=new Mutex(true,"Local\\ArtoSalesCopilotPreview",out var first);if(!first){MessageBox.Show("Arto Sales Copilot is already open. Use its existing window.","Arto Sales Copilot");Shutdown();return;}}
         var window=new MainWindow(smoke);MainWindow=window;window.Show();
         if(review){window.PrepareUiReview();return;}

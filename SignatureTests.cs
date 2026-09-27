@@ -17,7 +17,7 @@ public partial class MainWindow
         BriefTitle.Text="Client portal discovery · fictional demonstration";
         for(int i=0;i<4;i++)AddTurn(Demo.Turn(i,"en"));ShowAdvice(Demo.Advice(3,"en"));
         SetUi(StatusText,()=>T("Идёт текстовый пример. Реплики и подсказки подготовлены заранее. Микрофон выключен."));
-        SetUi(ModeText,()=>T("Текстовый пример · без микрофона"));
+        SetUi(CaptureStateText,()=>T("Текстовый пример · без микрофона"));
         CopyButton.Focus();UiMotion.KeyboardInput=true;
         var focused=Keyboard.FocusedElement;
         ShowAdvice(Demo.Advice(4,"en"));

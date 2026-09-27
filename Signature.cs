@@ -29,16 +29,16 @@ public partial class MainWindow
     void NavigationChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!ready || e.Source != Tabs) return;
-        UpdateSignature();
-        if (Tabs.SelectedContent is FrameworkElement page) UiMotion.Reveal(page, 160);
+        UpdateSignature();RefreshCallPresentation();
+        // Page changes preserve geometry; motion is limited to advice, pulse and mini.
     }
     void UpdateSignature()
     {
         if (PageTitle is null || Tabs.SelectedItem is not TabItem tab) return;
-        BrandName.SetBinding(TextBlock.TextProperty, new Binding("Header") { Source = tab });
+        BrandName.Text=System.Windows.Automation.AutomationProperties.GetName(tab);
         if (Tabs.SelectedIndex == 0)
             PageTitle.SetBinding(TextBlock.TextProperty, new Binding("Text") { Source = BriefTitle, Converter = new ClientTitleConverter() });
-        else PageTitle.SetBinding(TextBlock.TextProperty, new Binding("Header") { Source = tab });
+        else PageTitle.Text=System.Windows.Automation.AutomationProperties.GetName(tab);
         Language = System.Windows.Markup.XmlLanguage.GetLanguage(UiText.Language);
         var handle = new WindowInteropHelper(this).Handle;
         if (handle == IntPtr.Zero) return;
@@ -52,7 +52,7 @@ public partial class MainWindow
     void ShowFeedback(string text)
     {
         FeedbackText.Text = text; FeedbackBox.Visibility = Visibility.Visible;
-        UiMotion.Reveal(FeedbackBox, 160); feedbackTimer.Stop(); feedbackTimer.Start();
+        feedbackTimer.Stop(); feedbackTimer.Start();
     }
     public void PrepareUiReview()
     {
@@ -62,7 +62,7 @@ public partial class MainWindow
         OutputBox.ItemsSource=new[]{new DeviceOption("fixture-output","Demo headphones (not connected)"),new DeviceOption("fixture-cable","Demo CABLE-A (not connected)")};OutputBox.SelectedIndex=0;
         // Review runs have an isolated empty store: no real keys, endpoint or audio worker.
         scripted=true;for(int i=0;i<4;i++)AddTurn(Demo.Turn(i,"en"));ShowAdvice(Demo.Advice(3,"en"));RenderVoice();
-        SetUi(ModeText,()=>T("Текстовый пример · без микрофона"));
+        SetUi(CaptureStateText,()=>T("Текстовый пример · без микрофона"));
         SetUi(StatusText,()=>T("Идёт текстовый пример. Реплики и подсказки подготовлены заранее. Микрофон выключен."));
         KeyStatus.Text="Jev: —\nOpenAI: —";
     }

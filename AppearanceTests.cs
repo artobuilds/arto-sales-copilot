@@ -24,13 +24,13 @@ public partial class MainWindow
         var keyBytes=File.ReadAllBytes(Path.Combine(Store.Root,"typesafe.key"));
         scripted=true;ClearConversation();for(int i=0;i<4;i++)AddTurn(Demo.Turn(i,"en"));ShowAdvice(Demo.Advice(3,"en"));
         await Task.Delay(220);
-        SetUi(ModeText,()=>T("Текстовый пример · без микрофона"));SetUi(StatusText,()=>T("Идёт текстовый пример. Реплики и подсказки подготовлены заранее. Микрофон выключен."));
+        SetUi(CaptureStateText,()=>T("Текстовый пример · без микрофона"));SetUi(StatusText,()=>T("Идёт текстовый пример. Реплики и подсказки подготовлены заранее. Микрофон выключен."));
         var clientPhrase=SayText.Text;var callLanguage=LanguageCode;
         foreach(var (code,index) in new[]{("ru",0),("uk",1),("en",2)})
         {
             InterfaceLanguageBox.SelectedIndex=index;await Dispatcher.InvokeAsync(()=>{},System.Windows.Threading.DispatcherPriority.ApplicationIdle);
             Check(UiText.Language==code&&((TabItem)Tabs.Items[0]).Header.ToString()==T("Звонок"),"navigation switches to "+code);
-            Check(ModeText.Text==T("Текстовый пример · без микрофона")&&VoiceHeading.Text==T("Голос и интонация"),"existing status and voice panel switch to "+code);
+            Check(CaptureStateText.Text==T("Текстовый пример · без микрофона")&&VoiceHeading.Text==T("Голос и интонация"),"existing status and voice panel switch to "+code);
             Check(AdviceTitle.Text==Coach.Title("value",code)&&SayText.Text==clientPhrase&&LanguageCode==callLanguage,"UI language preserves client reply and call language: "+code);
             var turnPanel=(StackPanel)((Border)TranscriptPanel.Children[0]).Child;
             Check(((TextBlock)turnPanel.Children[0]).Text.StartsWith(T("Клиент"))&&((TextBlock)turnPanel.Children[1]).Text==Demo.Turn(0,"en").Text,"transcript headings translate but client words do not: "+code);

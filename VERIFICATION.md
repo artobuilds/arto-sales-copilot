@@ -1,4 +1,22 @@
-# Preview 0.6.1 verification
+# Preview 0.7.0 verification
+
+Validated on 2026-09-27 with .NET SDK 10.0.301 and the existing NAudio 2.2.1 dependency. The Release publication, published executable `--self-test` and `--ui-smoke` pass. The current run contains **36 offline checks and 475 UI checks**, plus one informational DPI line. Both UI modes use isolated temporary storage from startup; no real microphone, video capture or paid provider request was made.
+
+The 0.7 checks cover:
+
+- RU/UK/EN, Day/Night and 1000×720 / 1320×900 outer-window geometry, with manual input open and closed and a status banner present. Header, reply, four voice values and topic controls stay within the viewport; a normal reply fits without scrolling.
+- Navigation labels stay on one line. Compact topics open in a popup; full-size chips stay visible. Esc closes the manual input without losing its draft.
+- Idle readiness, honest demo labeling and zero demo meters; live status color/time and Start/Stop visibility; 1.5-second output-activity expiry.
+- Mini shared advice binding, topmost/taskbar behavior, Expand and Esc returning to the main window, and automatic return when the call ends.
+- Coordinate-only persistence preserving unknown settings and the saved brief. Existing tests also cover encrypted keys and independent appearance/call-language settings.
+- Live status contrast and explicit high-contrast system-color mapping. Advice keyboard focus and reduced-motion tests remain active.
+
+The five `v07-*.png` files in `docs/redesign/after/` are application-rendered synthetic fixtures. They do not demonstrate actual audio levels, interim transcription, provider availability or a successful client call. See [DESIGN.md](DESIGN.md) for reference comparisons and implementation details.
+
+Unverified: a real Zoom/Jev/OpenAI call, actual multi-monitor moves and Windows scale changes, screen-reader operation, and native Mica appearance across Windows versions. No new claim about the previously unresolved provider-account access was made.
+
+## Earlier 0.6.1 verification record
+
 
 The public source uses neutral briefing defaults, relative runtime paths and user-selected key imports. It excludes the developer's installed application, personal profile, provider-account diagnostics, credentials, recordings and history.
 

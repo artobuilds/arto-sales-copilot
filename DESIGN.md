@@ -1,4 +1,31 @@
-# Arto Signature — interface 0.6.1
+# Arto Signature — interface 0.7.0
+
+## Call screen 0.7
+
+Implemented from [SPEC.md](docs/redesign/v0.7/SPEC.md) and the five supplied HTML files. The browser tool rejected local-file navigation. The owner explicitly approved reading the HTML sizes/styles and comparing the supplied PNGs with WPF exports instead. Reference assets were preserved verbatim in their own commit.
+
+The Call page now has a 76/64-pixel rail, a single header with capture state, elapsed time and the existing audio meters, a larger advice card, and a voice strip below it. The right column holds the transcript, persistent topics and a collapsible text input. Idle mode checks the brief's non-empty title/client/goal fields and selected audio devices; it does not certify API access or microphone quality. Full navigation names remain available to accessibility tools and tooltips when narrow labels are trimmed.
+
+The mini window shares the same advice text, title, clock, voice observations and real output-level activity as the main window. It is always Night-themed, 420×280 by default, resizable from 360 to 640 wide, and returns to the main view with Esc or Expand. Only its coordinates are added to settings, using an atomic JSON patch that preserves unrelated fields and unfinished briefing edits. Capture, providers, recordings and acoustic algorithms are unchanged.
+
+The activity row uses the existing capture amplitude gate (0.009) and disappears after 1.5 seconds without above-threshold output. The speech worker has no interim transcript, so the row shows its label and real-level bars only. This is output activity, not individual speaker identification. The app retains all 12 existing topics instead of deleting six to match the illustrative mockup content. Demo voice values remain dashes. Long voice strings stay on one line and expose full text in tooltips.
+
+Existing palette entries remain unchanged; only LivePill and LiveDot were added. The live status text passes 4.5:1 contrast in both themes. Motion is limited to advice reveal, the live pulse and mini opening; it respects the existing reduced-motion/high-contrast/keyboard checks.
+
+### Reference beside WPF output
+
+These are synthetic UI fixtures exported with the application's existing RenderTargetBitmap exporter, not a real call or a verified provider response. Voice readings are synthetic test inputs. Audio meters remain zero because no microphone or output capture was started. Actual typeface metrics differ from the supplied Linux PNGs; HTML supplied the requested dimensions and type sizes. The normal exports have a 1320×860 client area; compact has a 1000×720 client area, and tests also cover the smaller client area of a 1000×720 outer window.
+
+| State | Approved reference | WPF 0.7 |
+| --- | --- | --- |
+| Call · Day | ![Reference Day](docs/redesign/v0.7/mockups/call-live-day.png) | ![WPF Day](docs/redesign/after/v07-live-day.png) |
+| Call · Night | ![Reference Night](docs/redesign/v0.7/mockups/call-live-night.png) | ![WPF Night](docs/redesign/after/v07-live-night.png) |
+| Before the call | ![Reference idle](docs/redesign/v0.7/mockups/call-idle-day.png) | ![WPF idle](docs/redesign/after/v07-idle-day.png) |
+| Compact | ![Reference compact](docs/redesign/v0.7/mockups/call-live-1000x720.png) | ![WPF compact](docs/redesign/after/v07-compact.png) |
+| Mini | ![Reference mini](docs/redesign/v0.7/mockups/mini-overlay.png) | ![WPF mini](docs/redesign/after/v07-mini.png) |
+
+## Earlier 0.6–0.6.1 design record
+
 
 An operator should see the client, the next useful phrase and the state of the call without searching through a settings form. This redesign changes the shell and information hierarchy while retaining the native WPF controls and existing call logic.
 

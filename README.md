@@ -2,9 +2,9 @@
 
 A native Windows assistant that keeps suggested replies, a transcript and local voice observations beside your call.
 
-**Preview 0.6.1 · Arto Signature · Windows · .NET 10 / WPF · RU / UK / EN · Day / Night themes**
+**Preview 0.7.0 · Arto Signature · Windows · .NET 10 / WPF · RU / UK / EN · Day / Night themes**
 
-![Call view in the light theme, using fictional demo content](docs/images/call-light.png)
+![Call view in the light theme, using synthetic test content; no live audio or provider call](docs/redesign/after/v07-live-day.png)
 
 ## What it does
 
@@ -32,9 +32,9 @@ Start-Process -FilePath '.\app\Arto Sales Copilot.exe'
 
 If PowerShell blocks scripts, review the script and use a policy permitted by your organization. The build restores NuGet dependencies and writes to local ignored directories. It does not install Python, download models, create a background service, configure audio routing or start capture.
 
-Select **Посмотреть пример** (View example). The initial interface is Russian; change it in **Настройки → Язык интерфейса**. The Day/Night selector is alongside it. Preferences apply immediately and save automatically.
+Select **⋯ → Посмотреть пример** (View example), or the example link on the readiness card. The initial interface is Russian; change it in **Настройки → Язык интерфейса**. The Day/Night selector is alongside it. Preferences apply immediately and save automatically.
 
-Version 0.6 introduces persistent side navigation, a client-context header, a focused reply area and a quieter transcript. Version 0.6.1 makes the two call disclosures explicit Open/Hide buttons, gives capture status a padded footer, and uses a simple Arto / Sales Copilot wordmark. At 1000×720, opening extra details scrolls the working area instead of reducing the reply to zero height; capture status remains fixed below it. In the compact layout, secondary voice explanations move to the voice heading's tooltip. Settings retain the same behavior and storage. See the [design decisions, concepts and before/after evidence](DESIGN.md).
+Version 0.7 follows the approved call-screen mockups: a 76-pixel navigation rail (64 in compact mode), one header with capture state and elapsed time, a larger reply card, an always-visible voice strip, topic chips and an inline text test. Before a call, the card checks whether the brief and audio selections are ready. The mini-window button is available during live capture or a text example; Esc or Expand returns to the main window. Only the mini window position is saved. See the [design decisions and side-by-side mockup comparisons](DESIGN.md).
 
 Optional: `./build.ps1 -Shortcut` creates a desktop shortcut only if that shortcut does not already exist. Use a writable project directory. Do not distribute your populated `app/` directory.
 

@@ -95,6 +95,7 @@ public partial class MainWindow
             };
             if(voiceProblem!="save_failed")VoicePitchText.Text=VoiceLevelText.Text=VoicePaceText.Text=VoicePauseText.Text="—";
         }
+        RenderVoicePresentation();
     }
     static string VoiceValue(string value)=>value switch
     {

@@ -35,7 +35,7 @@ public partial class MainWindow : Window
         LanguageBox.SelectedIndex=settings.Language switch {"ru"=>1,"uk"=>2,_=>0};
         if(!smoke) { try{RefreshDeviceList();UpdateKeyStatus();}catch{SetUi(StatusText,()=>T("Не удалось загрузить устройства или ключи. Текстовый пример доступен."));} }
         InterfaceLanguageBox.SelectedIndex=settings.InterfaceLanguage switch{"uk"=>1,"en"=>2,_=>0};ThemeBox.SelectedIndex=settings.Theme=="light"?1:0;
-        ready=true;ApplyAppearance();SetButtons();RenderVoice();
+        ready=true;InitializeCallPresentation();ApplyAppearance();SetButtons();RenderVoice();
     }
     string LanguageCode=>((LanguageBox.SelectedItem as ComboBoxItem)?.Tag as string)??"en";
     void LanguageChanged(object sender,SelectionChangedEventArgs e) {if(!ready)return;settings.Language=LanguageCode;if(busy)SetUi(StatusText,()=>T("Новый язык будет применён со следующего звонка."));RenderVoice();}
@@ -92,9 +92,9 @@ public partial class MainWindow : Window
         sb.AppendLine("\n## Latest suggestion (not an agreed commitment)\n\n"+SayText.Text);File.WriteAllText(d.FileName,sb.ToString(),Encoding.UTF8);SetUi(StatusText,()=>T("Заметки сохранены в выбранный файл."));
     });
     void CopyLine(object s,RoutedEventArgs e)=>Guard(()=>{Clipboard.SetText(SayText.Text);ShowFeedback(T("Скопировано"));});
-    void SetButtons() {DemoButton.IsEnabled=!busy&&!finalizing;AiDemoButton.IsEnabled=!busy&&!finalizing;LiveButton.IsEnabled=!busy&&!finalizing;NewButton.IsEnabled=!busy&&!finalizing;LanguageBox.IsEnabled=!busy&&!finalizing;VoiceEnabledBox.IsEnabled=!busy&&!finalizing;StopButton.IsEnabled=busy&&!finalizing;MicrophoneBox.IsEnabled=OutputBox.IsEnabled=VideoSourceBox.IsEnabled=!busy&&!finalizing;}
-    void ClearConversation() {turns.Clear();TranscriptPanel.Children.Clear();TranscriptPanel.Children.Add(EmptyTranscript);SetUi(TurnCount,()=>T("0 реплик"));SignalsPanel.Children.Clear();aiRequests=0;inputTokens=0;SetUi(AdviceTitle,()=>T("Подсказка появится здесь"));SetUi(SayText,()=>T("Заполни «Подготовку», выбери устройства в «Звук и запись», затем нажми «Начать звонок»."));SetUi(AdviceMeta,()=>T("Подсказок пока нет"));SetUi(StageText,()=>T("Знакомство"));TopicsEmptyText.Visibility=Visibility.Visible;ResetVoiceState();}
-    void NewConversation(object s,RoutedEventArgs e) {if(busy)return;if(turns.Count>0&&MessageBox.Show(this,T("Очистить текущий разговор на экране? Сначала сохрани заметки, если они нужны."),T("Новый звонок"),MessageBoxButton.YesNo)!=MessageBoxResult.Yes)return;scripted=false;ClearConversation();SetUi(ModeText,()=>T("Микрофон выключен"));SetUi(StatusText,()=>T("Новый разговор. Проверь подготовку клиента и устройства."));SetUi(SessionMeta,()=>T("Запись начнётся после «Начать звонок»"));}
+    void SetButtons() {DemoButton.IsEnabled=!busy&&!finalizing;AiDemoButton.IsEnabled=!busy&&!finalizing;LiveButton.IsEnabled=!busy&&!finalizing;NewButton.IsEnabled=!busy&&!finalizing;LanguageBox.IsEnabled=!busy&&!finalizing;VoiceEnabledBox.IsEnabled=!busy&&!finalizing;StopButton.IsEnabled=busy&&!finalizing;MicrophoneBox.IsEnabled=OutputBox.IsEnabled=VideoSourceBox.IsEnabled=!busy&&!finalizing;RefreshCallPresentation();}
+    void ClearConversation() {hasAdvice=false;displayedSignals.Clear();lastOutputActivity=double.NegativeInfinity;turns.Clear();TranscriptPanel.Children.Clear();TranscriptPanel.Children.Add(EmptyTranscript);SetUi(TurnCount,()=>T("0 реплик"));SignalsPanel.Children.Clear();aiRequests=0;inputTokens=0;SetUi(AdviceTitle,()=>T("Подсказка появится здесь"));SetUi(SayText,()=>T("Заполни «Подготовку», выбери устройства в «Звук и запись», затем нажми «Начать звонок»."));SetUi(AdviceMeta,()=>T("Подсказок пока нет"));SetUi(StageText,()=>T("Знакомство"));TopicsEmptyText.Visibility=Visibility.Visible;ResetVoiceState();RenderTopics();RefreshCallPresentation();}
+    void NewConversation(object s,RoutedEventArgs e) {if(busy)return;if(turns.Count>0&&MessageBox.Show(this,T("Очистить текущий разговор на экране? Сначала сохрани заметки, если они нужны."),T("Новый звонок"),MessageBoxButton.YesNo)!=MessageBoxResult.Yes)return;scripted=false;ClearConversation();SetUi(CaptureStateText,()=>T("Микрофон выключен"));SetUi(StatusText,()=>T("Новый разговор. Проверь подготовку клиента и устройства."));SetUi(SessionMeta,()=>T("Запись начнётся после «Начать звонок»"));}
     void Begin(bool demo,bool isLive,bool clear)
     {
         if(finalizing)throw new InvalidOperationException(T("Подожди завершения сохранения предыдущей записи."));
@@ -113,7 +113,7 @@ public partial class MainWindow : Window
             if(ai) { typesafe=Store.GetKey("typesafe");if(typesafe.Length==0)throw new InvalidOperationException(T("Добавь ключ Jev в «Настройки ИИ»."));if(MessageBox.Show(this,T("Отправить 8 вымышленных реплик в Jev? Это расходует API-кредит. Твой реальный brief и микрофон не используются."),T("Проверка Jev"),MessageBoxButton.OKCancel)!=MessageBoxResult.OK)return; }
             Begin(!ai,false,true);gen=generation;var ct=session.Token;
             activeBrief=new Brief {Title="Fictional sales demo",Client="Fictional company with slow lead responses and manual data entry. No real client data.",CustomChecks=[]};activePhrasing=false;
-            SetUi(ModeText,()=>ai?T("Проверка Jev · без микрофона"):T("Текстовый пример · без микрофона"));
+            SetUi(CaptureStateText,()=>ai?T("Проверка Jev · без микрофона"):T("Текстовый пример · без микрофона"));
             SetUi(StatusText,()=>ai?T("Проверяем Jev на вымышленном разговоре."):T("Идёт текстовый пример. Реплики и подсказки подготовлены заранее. Микрофон выключен."));
             for(int i=0;i<Demo.Turns.Length;i++) {ct.ThrowIfCancellationRequested();AddTurn(Demo.Turn(i,activeLanguage));if(ai)await Analyze(ct,gen);else ShowAdvice(Demo.Advice(i,activeLanguage));await Task.Delay(2400,ct);}
             if(gen==generation){SetUi(StatusText,()=>ai?T("Проверка Jev завершена. Посмотри полученные подсказки."):T("Пример завершён. Микрофон и ИИ не использовались. Для настоящего разговора нажми «Начать звонок»."));busy=false;SetButtons();RenderVoice();}
@@ -130,7 +130,7 @@ public partial class MainWindow : Window
             if(ConsentBox.IsChecked!=true)throw new InvalidOperationException(T("На вкладке «Звук и запись» подтверди разрешение на передачу текста разговора и brief в ИИ."));
             bool clear=scripted;Begin(false,false,clear);gen=generation;openai=Store.GetKey("openai");
             if(activePhrasing&&openai.Length==0)throw new InvalidOperationException(T("Генерация через OpenAI включена. Добавь его ключ в «Настройки ИИ» или выключи эту функцию."));
-            AddTurn(new(((SpeakerBox.SelectedItem as ComboBoxItem)?.Tag as string)??"client",ManualText.Text.Trim(),turns.Count==0?0:turns[^1].Seconds+1));ManualText.Clear();SetUi(ModeText,()=>T("Проверка текста · без микрофона"));
+            AddTurn(new(((SpeakerBox.SelectedItem as ComboBoxItem)?.Tag as string)??"client",ManualText.Text.Trim(),turns.Count==0?0:turns[^1].Seconds+1));ManualText.Clear();SetUi(CaptureStateText,()=>T("Проверка текста · без микрофона"));
             await Analyze(session.Token,gen);if(gen==generation){busy=false;SetButtons();}
         }catch(OperationCanceledException){}catch(Exception ex){if(gen==generation)Fail(ex);}
     }
@@ -150,7 +150,7 @@ public partial class MainWindow : Window
     {
         try{await foreach(var item in reader.ReadAllAsync(ct))await Analyze(ct,gen,item.Turns,item.Revision);}
         catch(OperationCanceledException){}
-        catch(Exception ex){if(gen==generation){SetUi(ModeText,()=>T("Ошибка ИИ · запись продолжается"));SetUi(StatusText,()=>T(FriendlyError(ex))+T(" Запись и расшифровка продолжаются. Проверь доступ к ИИ перед новым звонком."));SetUi(AdviceTitle,()=>T("ИИ сейчас недоступен"));SetUi(SayText,()=>T("Новых подсказок пока нет. Запись и расшифровка продолжаются."));SetUi(AdviceMeta,()=>T("Ошибка сервиса · это сообщение о состоянии"));}}
+        catch(Exception ex){if(gen==generation){SetUi(CaptureStateText,()=>T("Ошибка ИИ · запись продолжается"));SetUi(StatusText,()=>T(FriendlyError(ex))+T(" Запись и расшифровка продолжаются. Проверь доступ к ИИ перед новым звонком."));SetUi(AdviceTitle,()=>T("ИИ сейчас недоступен"));SetUi(SayText,()=>T("Новых подсказок пока нет. Запись и расшифровка продолжаются."));SetUi(AdviceMeta,()=>T("Ошибка сервиса · это сообщение о состоянии"));}}
     }
     async void StartLive(object s,RoutedEventArgs e)
     {
@@ -162,7 +162,7 @@ public partial class MainWindow : Window
             typesafe=Store.GetKey("typesafe");if(typesafe.Length==0)throw new InvalidOperationException(T("Перед звонком добавь ключ Jev в «Настройки ИИ»."));
             Begin(false,true,true);gen=generation;openai=Store.GetKey("openai");var runningSession=session;var ct=runningSession.Token;
             if(activePhrasing&&openai.Length==0)throw new InvalidOperationException(T("Генерация через OpenAI включена. Добавь его ключ в «Настройки ИИ» или выключи эту функцию."));
-            SetUi(ModeText,()=>T("Подготовка · микрофон выключен"));SetUi(StatusText,()=>T("Загружаем распознавание речи. Микрофон ещё выключен…"));
+            SetUi(CaptureStateText,()=>T("Подготовка · микрофон выключен"));SetUi(StatusText,()=>T("Загружаем распознавание речи. Микрофон ещё выключен…"));
             worker=new();await worker.Start(settings,ct);ct.ThrowIfCancellationRequested();if(gen!=generation)return;
             await StartVoice(gen,ct);ct.ThrowIfCancellationRequested();if(gen!=generation)return;
             var source=VideoSourceBox.SelectedItem as VideoSource??new VideoSource(T("Без видео"),"none");
@@ -177,9 +177,9 @@ public partial class MainWindow : Window
                 var voiceWorker=voice;
                 if(voiceWorker is not null){chunk=chunk with{VoiceProfile=voiceWorker.StampProfile(chunk.Speaker)};voiceWorker.Enqueue(chunk);}
                 if(ct.IsCancellationRequested||!queue.Writer.TryWrite(chunk)){TryDelete(chunk.Path);Dispatcher.BeginInvoke(()=>{if(gen==generation)SetUi(StatusText,()=>T("Распознавание не успевает: один фрагмент пропущен. Останови звонок и проверь нагрузку компьютера."));});}
-            },(who,value)=>Dispatcher.BeginInvoke(()=>{if(gen==generation){if(who=="rep")MicMeter.Value=value;else OutputMeter.Value=value;}}),message=>Dispatcher.BeginInvoke(()=>{if(gen==generation)Fail(new InvalidOperationException(message));}),recording?.Folder,who=>recording?.AudioStart(who));
-            SetUi(ModeText,()=>T("Слушаем тебя и клиента"));SetUi(StatusText,()=>T("Слушаем разговор. Звук других приложений на выбранном устройстве тоже попадает в запись."));
-            if(recording is not null)SetUi(ModeText,()=>source.Kind=="none"?T("Записываем звук и текст"):T("Записываем видео, звук и текст"));
+            },(who,value)=>Dispatcher.BeginInvoke(()=>{if(gen==generation){if(who=="rep")MicMeter.Value=value;else {OutputMeter.Value=value;UpdateOutputActivity(value);}}}),message=>Dispatcher.BeginInvoke(()=>{if(gen==generation)Fail(new InvalidOperationException(message));}),recording?.Folder,who=>recording?.AudioStart(who));
+            SetUi(CaptureStateText,()=>T("Слушаем тебя и клиента"));SetUi(StatusText,()=>T("Слушаем разговор. Звук других приложений на выбранном устройстве тоже попадает в запись."));
+            if(recording is not null)SetUi(CaptureStateText,()=>source.Kind=="none"?T("Записываем звук и текст"):T("Записываем видео, звук и текст"));
             var adviceQueue=Channel.CreateBounded<(Utterance[],int)>(new BoundedChannelOptions(1){FullMode=BoundedChannelFullMode.DropOldest,SingleReader=true,SingleWriter=true});
             var coaching=ProcessCoaching(adviceQueue.Reader,ct,gen);
             try{await foreach(var chunk in queue.Reader.ReadAllAsync(ct))
@@ -198,40 +198,34 @@ public partial class MainWindow : Window
         recording?.Turn(t);
         turnRevision++;
         turns.Add(t);if(turns.Count>1000)turns.RemoveAt(0);
-        if(EmptyTranscript is not null)TranscriptPanel.Children.Remove(EmptyTranscript);
+        if(EmptyTranscript is not null)TranscriptPanel.Children.Remove(EmptyTranscript);if(speakingRow is not null)TranscriptPanel.Children.Remove(speakingRow);
         var stamp=$"{Math.Floor(Math.Max(0,t.Seconds)/60):00}:{Math.Max(0,t.Seconds)%60:00}";
-        var panel=new StackPanel();panel.Children.Add(TranscriptHeading(t,stamp));panel.Children.Add(new TextBlock{Text=t.Text,FontSize=15,LineHeight=23});
-        var row=new Border{Child=panel,Padding=new(12,16,12,16),Margin=new(0,0,0,6),CornerRadius=new(6)};
+        var panel=new StackPanel();panel.Children.Add(TranscriptHeading(t,stamp));panel.Children.Add(new TextBlock{Text=t.Text,FontSize=14,LineHeight=21});
+        var row=new Border{Child=panel,Padding=t.Speaker=="rep"?new(14,10,14,10):new(14,0,14,0),Margin=new(0,0,0,14),CornerRadius=new(12)};
         row.SetResourceReference(Border.BackgroundProperty,t.Speaker=="rep"?"TranscriptRep":"TranscriptClient");TranscriptPanel.Children.Add(row);
-        if(TranscriptPanel.Children.Count>200)TranscriptPanel.Children.RemoveAt(0);SetUi(TurnCount,()=>T("Реплик: {0}",turns.Count));TranscriptScroll.ScrollToEnd();
+        if(TranscriptPanel.Children.Count>200)TranscriptPanel.Children.RemoveAt(0);SetUi(TurnCount,()=>T("Реплик: {0}",turns.Count));TranscriptScroll.ScrollToEnd();RefreshCallPresentation();
     }
     public void ShowAdvice(Advice a)
     {
         recording?.Advice(a);
         UiMotion.Reveal(AdviceContent);UiMotion.Reveal(SignatureMark,180);
         SetUi(AdviceTitle,()=>Coach.Title(a.Move,UiText.Language));SayText.Text=a.Say;SetUi(StageText,()=>StageName(a.Stage));SetUi(AdviceMeta,()=>scripted?T("Готовый пример · ИИ не используется"):T("Подсказка Jev · базовая фраза"));UiText.Bind(AdviceMeta,FrameworkElement.ToolTipProperty,()=>scripted?T("Готовый пример · ИИ не используется"):T("{0}; уверенность в выборе шага: {1:P0}. Это не вероятность продажи.",a.Source,a.Confidence));SignalsPanel.Children.Clear();
-        foreach(var s in a.Signals) {
-            var state=s.Value>=.8?T("есть в разговоре"):s.Value<=.2?T("пока не подтверждено"):T("нужно уточнить");
-            var text=new TextBlock{FontSize=11};text.SetResourceReference(TextBlock.ForegroundProperty,s.Value>=.8?"Accent":"Muted");SetUi(text,()=>T("{0} · {1}",TopicName(s),T(state)));
-            var chip=new Border{Child=text,Padding=new(10,7,10,7),Margin=new(0,0,7,7),CornerRadius=new(5)};
-            chip.SetResourceReference(Border.BackgroundProperty,"Chip");UiText.Bind(chip,FrameworkElement.ToolTipProperty,()=>T("Оценка наличия сведений: {0:P0}. Это не вероятность продажи. «Не подтверждено» также может означать «не применимо».",s.Value));SignalsPanel.Children.Add(chip);
-        }
-        TopicsEmptyText.Visibility=SignalsPanel.Children.Count==0?Visibility.Visible:Visibility.Collapsed;
+        hasAdvice=true;displayedSignals=a.Signals.ToList();RenderTopics();RefreshCallPresentation();
     }
     async void StopClicked(object s,RoutedEventArgs e){StopSession();SetUi(StatusText,()=>T("Останавливаем запись и сохраняем файлы…"));await recordingFinalization;SetUi(StatusText,()=>T(stopSummary));}
     void StopSession()
     {
-        generation++;session.Cancel();capture?.Dispose();capture=null;worker?.Dispose();worker=null;busy=false;live=false;MicMeter.Value=0;OutputMeter.Value=0;SetUi(ModeText,()=>T("Остановлено · микрофон выключен"));SetButtons();
+        generation++;session.Cancel();capture?.Dispose();capture=null;worker?.Dispose();worker=null;busy=false;live=false;MicMeter.Value=0;OutputMeter.Value=0;SetUi(CaptureStateText,()=>T("Остановлено · микрофон выключен"));SetButtons();
         var voiceCompletion=StopVoice();var saved=recording;recording=null;var recorder=video;video=null;
         if(saved is not null||recorder is not null||!voiceCompletion.IsCompleted){finalizing=true;SetButtons();recordingFinalization=FinishRecording(saved,recorder,settings.FfmpegPath,voiceCompletion);}
         var folder=audioFolder;audioFolder=null;if(folder is not null&&Directory.Exists(folder)){foreach(var p in Directory.GetFiles(folder,"*.wav"))TryDelete(p);try{Directory.Delete(folder);}catch{}}
     }
     static void TryDelete(string path){try{File.Delete(path);}catch{}}
     bool ConfirmReplace()=>turns.Count==0||scripted||MessageBox.Show(this,T("Начать новый звонок? Несохранённые заметки текущего разговора исчезнут с экрана. Продолжить?"),T("Новый звонок"),MessageBoxButton.YesNo)==MessageBoxResult.Yes;
-    void Fail(Exception ex){StopSession();SetUi(StatusText,()=>T(FriendlyError(ex)));SetUi(ModeText,()=>T("Ошибка · микрофон выключен"));}
+    void Fail(Exception ex){StopSession();SetUi(StatusText,()=>T(FriendlyError(ex)));SetUi(CaptureStateText,()=>T("Ошибка · микрофон выключен"));}
     void Guard(Action action){try{action();}catch(Exception ex){SetUi(StatusText,()=>T(FriendlyError(ex)));}}
     async Task FinishRecording(SessionRecording? saved,VideoRecorder? recorder,string ffmpeg,Task voiceCompletion){try{var ok=recorder is null||await recorder.Stop();if(saved is not null&&recorder is not null&&ok)ok=await saved.Mux(ffmpeg);saved?.Finish(ok?"stopped":"stopped-video-incomplete");stopSummary=saved is null?T("Остановлено. Запись этой встречи не сохранялась."):ok?T("Остановлено. Файлы сохранены в папке записей."):T("Остановлено. Исходные записи сохранены, но собрать видео не удалось. Проверь папку записей.");}catch{stopSummary=T("Исходные записи сохранены, но завершить обработку не удалось. Проверь папку записей.");}finally{await voiceCompletion;finalizing=false;SetButtons();}}
-    async void OnClosing(object? s,CancelEventArgs e){if(closingAfterStop){coach.Dispose();return;}StopSession();if(!recordingFinalization.IsCompleted){e.Cancel=true;await recordingFinalization;closingAfterStop=true;Close();}else coach.Dispose();}
+    async void OnClosing(object? s,CancelEventArgs e){if(mini is not null)mini.RestoreOnClose=false;if(closingAfterStop){coach.Dispose();return;}StopSession();if(!recordingFinalization.IsCompleted){e.Cancel=true;await recordingFinalization;closingAfterStop=true;Close();}else coach.Dispose();}
     public async Task Smoke(string directory)
     {
         Directory.CreateDirectory(directory);
@@ -252,15 +246,15 @@ public partial class MainWindow : Window
         var demoTask=DemoRun(false);await Task.Delay(80);
         Check(busy&&!live&&capture is null&&voice is null&&StopButton.IsEnabled,"real demo action advances text without starting audio");
         StopSession();await demoTask;Check(!busy&&!StopButton.IsEnabled,"stop cancels running demo playback");
-        scripted=false;ClearConversation();ModeText.Text="Микрофон выключен";StatusText.Text="Начни с подготовки клиента и выбора звука. Или посмотри пример без микрофона.";
+        scripted=false;ClearConversation();CaptureStateText.Text="Микрофон выключен";StatusText.Text="Начни с подготовки клиента и выбора звука. Или посмотри пример без микрофона.";
         for(int i=0;i<4;i++){Tabs.SelectedIndex=i;UpdateLayout();Capture(Path.Combine(directory,$"screen-{i+1}.png"));}
         GoAudio(this,new());Check(Tabs.SelectedIndex==2,"preparation shortcut opens sound settings");
         GoCall(this,new());Check(Tabs.SelectedIndex==0,"sound settings shortcut returns to call");
         scripted=true;for(int i=0;i<5;i++)AddTurn(Demo.Turn(i,"en"));ShowAdvice(Demo.Advice(4,"en"));RenderVoice();
-        ModeText.Text="Текстовый пример · без микрофона";StatusText.Text="Проверка интерфейса: вымышленные реплики, без микрофона и запросов к ИИ.";
+        CaptureStateText.Text="Текстовый пример · без микрофона";StatusText.Text="Проверка интерфейса: вымышленные реплики, без микрофона и запросов к ИИ.";
         Check(VoiceStatus.Text.Contains("нет звука")&&VoicePitchText.Text=="—","text demo explains absence of intonation and shows no fake metrics");
         Check(AdviceTitle.Text==Coach.Title("objection","ru")&&SayText.Text==Demo.Advice(4,"en").Say,"Russian coaching explanation preserves English client phrase");
-        Check(SayText.Foreground==FindResource("Ink")&&SayText.FontWeight==FontWeights.Normal,"selected navigation styling does not bleed into content");
+        Check(SayText.Foreground==FindResource("Ink")&&SayText.FontWeight==FontWeights.Medium,"selected navigation styling does not bleed into content");
         UpdateLayout();Capture(Path.Combine(directory,"redesign-demo.png"));
         foreach(var size in new[]{(1000d,720d),(1320d,900d)})
         {
@@ -279,7 +273,7 @@ public partial class MainWindow : Window
         OutputBox.SelectedIndex=1;OutputBox.IsDropDownOpen=false;Check((OutputBox.SelectedItem as DeviceOption)?.Id=="test-cable","device selection retains endpoint identity");
         Tabs.SelectedIndex=0;UpdateLayout();LanguageBox.Focus();
         Check(LanguageBox.IsKeyboardFocusWithin,"keyboard focus reaches language selection");
-        StopSession();Check(ModeText.Text=="Остановлено · микрофон выключен"&&!busy&&!live&&!StopButton.IsEnabled,"stop disables capture and stop action");
+        StopSession();Check(CaptureStateText.Text=="Остановлено · микрофон выключен"&&!busy&&!live&&!StopButton.IsEnabled,"stop disables capture and stop action");
         scripted=false;var fake=VoiceTests.Sample();clientVoice.Reset();for(int i=0;i<3;i++)clientVoice.Add(fake,i*4,1);
         clientVoice.Add(fake with{PitchHz=220},12,1);voiceReadings["client"]=clientVoice.Add(fake with{PitchHz=220},16,1);
         RenderVoice();Check(VoicePitchText.Text.Contains("Выше")&&!ResetVoiceButton.IsEnabled,"changed voice is readable; speaker reset disabled while stopped");
@@ -306,7 +300,7 @@ public partial class MainWindow : Window
         finally{Store.Root=originalRoot;}
         StatusText.Text=FriendlyError(new InvalidOperationException("TypeSafe HTTP 402 billing_error"));
         Check(StatusText.Text.Contains("биллинга")&&StatusText.ToolTip.ToString()!.Contains("402"),"billing error is understandable with original diagnostic available");
-        ModeText.Text="Ошибка ИИ · запись продолжается";AdviceTitle.Text="ИИ сейчас недоступен";SayText.Text="Новых подсказок пока нет. Запись и расшифровка продолжаются.";
+        CaptureStateText.Text="Ошибка ИИ · запись продолжается";AdviceTitle.Text="ИИ сейчас недоступен";SayText.Text="Новых подсказок пока нет. Запись и расшифровка продолжаются.";
         UpdateLayout();Capture(Path.Combine(directory,"redesign-error.png"));
         File.WriteAllLines(Path.Combine(directory,"ui-checks.txt"),checks);
     }
