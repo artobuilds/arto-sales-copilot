@@ -1,0 +1,1 @@
+{ "name": "arto-commit-guard", "version": "0.1.0", "description": "Blocks git commit/push in Arto Sales Copilot when staged files look like settings, keys, briefs, transcripts, recordings, provider responses, model weights or runtimes (AGENTS.md rules)." }
